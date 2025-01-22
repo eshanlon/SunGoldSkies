@@ -30,7 +30,7 @@ t_cef = 5.17053 + 0.104981*(t_year - 2006)
 cef = t_cef/b_cef
 print(f'The cef is {cef}')
 
-# Aircraft Price
+#Fly away cost per airplane for 10% profit margin
 #prices for aircraft and engine are for non-electric airplanes
 #this is compensated for in C_elec_aircraft
 C_aircraft = 10**(-0.6681 + 1.5799*math.log10(mtow)) * cef
@@ -42,6 +42,7 @@ C_motors = 150*hp * cef
 C_batteries = 520*kWh * cef
 
 C_elec_aircraft = C_aircraft - C_engines + C_motors + C_batteries
+C_elec_aircraft = C_elec_aircraft + C_elec_aircraft*0.10 #applying 10% profit margin
 print(f'The predicted electric aircraft price is {C_elec_aircraft}')
 
 
@@ -81,8 +82,6 @@ rdte_solution = solve(rdte_eqn, C_rdte)
 
 print(f'The RDTE cost is {rdte_solution}')
 
-
-#Fly away cost per airplane for 10% profit margin
 
 
 # Direct Operating Costs (COC + FOC)
