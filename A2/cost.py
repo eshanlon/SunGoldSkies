@@ -53,9 +53,11 @@ W_amp = 10**(0.1936 + 0.8645*(math.log10(mtow)))
 C_aed_r = (0.0396*W_amp**0.791 * V_max**1.526 * N_rdte**0.183 * F_diff*F_cad) * R_e
 
 N_e = 1 #number of engines
-C_p = 1000 #cost per propeller, see appendix B in Roskam to actually calculate
+#C_p = 10**(0.6119 + 1.1432*(math.log10(hp))) #for metal propeller, hp is supposed to be shp
+C_p = 10**(0.7746 + 1.1432*(math.log10(hp))) #for composite propeller
 N_p = 1 #number of propellers
 C_avionics = 1000 #avionics cost, see appendix C for acutla calculation
+# ok actually the apendix C is way to complicated to calc cost of avionics
 N_st = 2 #number of statis test airplanes
 C_ea = (C_engines*N_e + C_p*N_p + C_avionics)*(N_rdte-N_st)
 C_dst_r = 0.008325*W_amp**0.873 * V_max**1.89 * N_rdte**0.346 * cef * F_diff
@@ -74,10 +76,11 @@ F_pro = 0.10 #suggested profit of 10%
 F_fin = 0.1 #interest rate
 
 C_rdte = symbols('C_rdte')
-rdte_eqn = Eq(C_rdte, C_aed_r + C_dst_r + C_fta_r + C_fto_r + C_tsf_r + (C_rdte * F_pro) + (C_rdte + F_fin))
+rdte_eqn = Eq(C_rdte, C_aed_r + C_dst_r + C_fta_r + C_fto_r + C_tsf_r + (C_rdte * F_pro) + (C_rdte * F_fin))
 rdte_solution = solve(rdte_eqn, C_rdte)
 
 print(f'The RDTE cost is {rdte_solution}')
+
 
 #Fly away cost per airplane for 10% profit margin
 
