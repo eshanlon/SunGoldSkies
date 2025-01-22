@@ -3,6 +3,7 @@
 # Cost Analysis Calculations
 
 import math
+from sympy import symbols, Eq, solve
 
 '''Notes:
 - All eqns are assumed from metabook unless specified
@@ -48,7 +49,7 @@ print(f'The predicted electric aircraft price is {C_elec_aircraft}')
 R_e = 40 #engineering manhour rate USD/hour
 W_amp = W_e - (W_1 + W_2 + W_3 + W_4) #weight of just airplane shell (engines, landing gear, avionics, etc... ommited)
 #alternative W_amp is below if doen't know component weights (less accurate):
-W_amp = 10**(0.1936 + 0.8645(math.log10(mtow)))
+W_amp = 10**(0.1936 + 0.8645*(math.log10(mtow)))
 C_aed_r = (0.0396*W_amp**0.791 * V_max**1.526 * N_rdte**0.183 * F_diff*F_cad) * R_e
 
 N_e = 1 #number of engines
@@ -72,9 +73,11 @@ C_tsf_r = 0 #if no extra test facilities are required
 F_pro = 0.10 #suggested profit of 10%
 F_fin = 0.1 #interest rate
 
-C_rdte = C_aed_r + C_dst_r + C_fta_r + C_fto_r + C_tsf_r + (C_rdte * F_pro) + (C_rdte + F_fin)
+C_rdte = symbols('C_rdte')
+rdte_eqn = Eq(C_rdte, C_aed_r + C_dst_r + C_fta_r + C_fto_r + C_tsf_r + (C_rdte * F_pro) + (C_rdte + F_fin))
+rdte_solution = solve(rdte_eqn, C_rdte)
 
-
+print(f'The RDTE cost is {rdte_solution}')
 
 #Fly away cost per airplane for 10% profit margin
 
