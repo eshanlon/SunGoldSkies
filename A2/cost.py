@@ -23,9 +23,16 @@ V_max = 250 #knts - max design speed
 N_rdte = 4 #number of airframes/airplanes used for testing, 2-8 for commercial programs
 F_diff = 1.5
 F_cad = 0.8
-W_b = 100
-P_elec = 20
-e_elec = 10
+W_b = 100 #weight of battery in kg
+P_elec = 20 #price of electricity in $/kWh
+e_elec = 10 #specific energy of the battery in Wh/kg
+W_A = 1000 #airframe weight
+R_L = 40 #maintainence labor rate in USD/hr
+t_b = 1 #mission block time in hours
+IR_a = 2 #hull insurance rate usually assumed to be 2% according to metabook
+K_depreciation = 0.1 #aircraft residual value factor
+n = 5 #number of years the aircraft is used
+
 
 # def cost(b_year, t_year, mtow, W_e, W_1,W_2, W_3, W_4, hp, kWh, V_max, N_rdte, F_diff, F_cad, C_fin_r):
 
@@ -58,7 +65,7 @@ print(f'The predicted electric aircraft price is {C_elec_aircraft}')
 R_e = 40 #engineering manhour rate USD/hour
 W_amp = W_e - (W_1 + W_2 + W_3 + W_4) #weight of just airplane shell (engines, landing gear, avionics, etc... ommited)
 #alternative W_amp is below if doen't know component weights (less accurate):
-W_amp = 10**(0.1936 + 0.8645(math.log10(mtow)))
+W_amp = 10**(0.1936 + 0.8645*(math.log10(mtow)))
 C_aed_r = (0.0396*W_amp**0.791 * V_max**1.526 * N_rdte**0.183 * F_diff*F_cad) * R_e
 
 
@@ -98,6 +105,22 @@ F_pro = 0.10 #suggested profit of 10%
 # Direct Operating Costs (COC + FOC)
 #COC
 C_elec = 1.05*W_b*P_elec*e_elec #1.05 is charging effeciency
+C_ML = 1.03*(3+((0.67*W_A)/1000))*R_L
+C_MM = 1.03*(30*cef)+0.79e-5*(C_aircraft - C_engines) #c_airframe = (C_aircraft - C_engines)
+C_airframe_maintainance = (C_ML +C_MM)*t_b
+coc = C_elec+ C_ML+ C_MM + C_airframe_maintainance
+
+#FOC
+U_annual = (1.5e3)*((3.4546*t_b)+2.994-((12.289*(t_b)**2)-(5.6626*t_b)+8.964)**0.5)
+C_insurance = ((IR_a*C_aircraft)/U_annual)*t_b
+C_depreciation = (C_elec_aircraft *(1-K_depreciation)*t_b)/(n*U_annual)
+doc_reg = C_elec+C_ML+C_MM+C_airframe_maintainance+U_annual+C_insurance+C_depreciation
+C_registration = (0.001+((10**-8)*mtow))*doc_reg
+
+foc = U_annual + C_insurance + C_depreciation + C_registration
+
+doc = coc+foc
+print("the doc is:", doc)
 
 #oil is negligable because all electric
 #we are assuming maintenance costs are negligible (metabook says to)
