@@ -83,7 +83,7 @@ C_tsf_r = 0 #if no extra test facilities are required
 F_pro = 0.10 #suggested profit of 10%
 
 
-C_rdte = C_aed_r + C_dst_r + C_fta_r + C_fto_r + C_tsf_r + (C_rdte * F_pro) + C_fin_r
+# C_rdte = C_aed_r + C_dst_r + C_fta_r + C_fto_r + C_tsf_r + (C_rdte * F_pro) + C_fin_r
 
 
 
