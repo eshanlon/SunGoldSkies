@@ -22,7 +22,7 @@ kWh = 10 #kWh of engine or motor
 V_max = 250 #knts - max design speed
 N_rdte = 4 #number of airframes/airplanes used for testing, 2-8 for commercial programs
 F_diff = 1.5
-F_cad = 0.8
+F_cad = 0.8 
 
 # Adjusting for Inflation
 b_cef = 5.17053 + 0.104981*(b_year - 2006)
@@ -46,6 +46,46 @@ C_elec_aircraft = C_elec_aircraft + C_elec_aircraft*0.10 #applying 10% profit ma
 print(f'The predicted electric aircraft price is {C_elec_aircraft}')
 
 
+#RDTE costs according to the slides
+# Parameters
+W_empty = 5000
+W_airframe = 0.40*W_empty
+V_max = 250 #ktas
+Q = 60 #number of aircraft produced in a 5 year period
+F_cert = 0.67
+F_comp = 1
+F_taper = 0
+F_cf = 0
+F_press = 0
+F_hye = 0
+then_year = 2035
+R_eng = 2.576*then_year-5058
+R_tool = 2.883*then_year-5666
+R_qc = 2.60*then_year-5112
+R_manufacturing = 2.316*then_year-4552
+cpi = 1.14 #THIS IS A PLACEHOLDER LOOK UP EQN LATER!!!!!!!
+
+#Cost of Engineering
+C_eng = 0.083*W_airframe**0.791*V_max**1.521*Q**0.183*F_cert*F_cf*F_comp*F_press*F_hye*R_eng*cpi
+
+#Tooling Costs
+C_tool = 2.1036*W_airframe**0.764*V_max**0.899*Q**0.178*F_taper*F_cf*F_comp*F_press*F_hye*R_tool*cpi
+
+#Manufacturing Costs
+C_manufacturing = 20.2588*W_airframe**0.74*V_max**0.543*Q**0.524*F_cert*F_cf*F_comp*F_hye*R_manufacturing*cpi
+
+#Development Support Costs
+C_dev = 0.06458*W_airframe**0.873*V_max**1.89*Q**0.346*F_cert*F_cf*F_comp*F_press*F_hye*cpi
+
+#Flight Test Operations Costs
+C_ft = 0.009646*W_airframe**1.16*V_max**1.3718*Q**1.281*F_cert*F_hye*cpi
+
+
+
+
+
+
+'''
 #RDT&E Costs (using Roskam)
 R_e = 40 #engineering manhour rate USD/hour
 W_amp = W_e - (W_1 + W_2 + W_3 + W_4) #weight of just airplane shell (engines, landing gear, avionics, etc... ommited)
@@ -81,7 +121,7 @@ rdte_eqn = Eq(C_rdte, C_aed_r + C_dst_r + C_fta_r + C_fto_r + C_tsf_r + (C_rdte 
 rdte_solution = solve(rdte_eqn, C_rdte)
 
 print(f'The RDTE cost is {rdte_solution}')
-
+'''
 
 
 # Direct Operating Costs (COC + FOC)
