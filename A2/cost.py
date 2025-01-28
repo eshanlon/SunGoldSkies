@@ -1,6 +1,6 @@
 # Cost Analysis
-
 # Cost Analysis Calculations
+
 
 import math
 from sympy import symbols, Eq, solve
@@ -149,6 +149,7 @@ b_cef = 5.17053 + 0.104981*(base_year - 2006)
 t_cef = 5.17053 + 0.104981*(then_year - 2006)
 cef = t_cef/b_cef
 print(f'The cef is {cef}')
+
 
 #COC
 C_elec = 1.05*W_b*P_elec*e_elec #1.05 is charging effeciency
