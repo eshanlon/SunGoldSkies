@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 
 #ADDED LUIS + DIANA WORK 1/26/25
 flight_t = 0.833 #[hr] ; Based on Velis electro. Refer to notes
-Pbat = 90 #[kW] ; Based on Velis electro kWh * flight_t
-specific_e = 0.6 #[kWh/kg]; Based on industry avg research
+Pbat = 24 #[kW] ; Based on Velis electro kWh * flight_t
+specific_e = 0.6 #[kWh/kg]; Based on futures estimates
 LD = 10 #Metabook Fig 2.4 Approx for Fixed Gear Prop Aircraft
 m_batR = ((flight_t * Pbat) / specific_e) * 2.20462 #[lbs]; Eqs 2.19 Martins
 
-R = 70 #[nmi]; RFP Design Mission Profile "Range"
-v = 200#[kts]; Approx based on Diana's kts vs kmi graph, kmi of R=25knmi based on RFP Mission.
+R = 70 #[nmi]; Bases on estimated area coverage
+v = 200#[kts]; Approx based on Diana's kts vs kmi graph, kmi of R=25knmi based on RFP Mission(change?)
 
 T = 371.167 #[lbf]; Check notes for solution
 c = 74.23 #[1/hr]; Check notes for derivation
