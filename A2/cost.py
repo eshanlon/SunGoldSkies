@@ -37,6 +37,17 @@ t_b = data.iloc[19,1] #mission block time in hours
 IR_a = data.iloc[20,1] #hull insurance rate usually assumed to be 2% according to metabook
 K_depreciation = data.iloc[21,1] #aircraft residual value factor
 n = data.iloc[22,1] #number of years the aircraft is used
+####INSERT BELOW VARIABLES INTO EXCEL#########
+W_f = 500 #Weight of fuel lbs
+P_f = 10 #price per gallon of jet fuel USD/gal
+rho_f = 10 # fuel density lbs/gal
+P_oil = 10 #cot er gallon of oil USD/gal
+rho_oil = 10 #density of oil
+SHP_TO = 1000 # takeoff shaft horsepower
+H_em = 4500 #number of hours between engine overhauls usually between 3000-5000
+c_motors = 500 # $150/hp using 2018 base year
+c_batteries = 1000 # $520/kWh using 2018 base year
+
 
 data_subset = data.iloc[25:32, 1:7]  # .iloc[row_start:row_end, col_start:col_end]
 cost_parameters = data_subset.to_numpy()
@@ -125,6 +136,9 @@ C_bat = 200*E_bat*cpi
 #Propeller Cost
 C_prop = 210*N_prop*cpi*D_p**2*(P_shp/D_p)**0.12
 
+#Cost of the Enginer ############################ KAYLA ADD LATER############
+C_engines = 0
+
 #Misc. Cost
 C_lg = -7500*Q #fixed landing gear cost
 C_av = 4500*Q #avionics cost
@@ -152,17 +166,23 @@ print(f'The cef is {cef}')
 
 
 #COC
+C_fuel = 1.02*W_f*(P_f/rho_f)
+W_oil = 0.0125 * W_f * (t_b/100)
+C_oil = 1.02 * W_oil * (P_oil/rho_oil)
 C_elec = 1.05*W_b*P_elec*e_elec #1.05 is charging effeciency
-C_ML = 1.03*(3+((0.67*W_airframe)/1000))*R_L
+C_ML_air = 1.03*(3+((0.67*W_airframe)/1000))*R_L
 C_MM = 1.03*(30*cef)+0.79e-5*(C_aircraft - C_em) #c_airframe = (C_aircraft - C_engines)
-C_airframe_maintainance = (C_ML +C_MM)*t_b
-coc = C_elec+ C_ML+ C_MM + C_airframe_maintainance
+C_ML_eng = 1.03*1.3*(0.4956+(0.0532*((SHP_TO/N_motor)/1000)*(1100/H_em))+0.1)*R_L
+C_eng_mtc = N_motor*(C_ML_eng+C_MM)*t_b
+C_elec_air = C_aircraft - C_engines + c_motors + c_batteries
+C_air_man = (C_ML_air +C_MM)*t_b
+coc = C_fuel + C_elec+C_oil+W_oil+ C_ML_air+ C_MM + C_ML_eng+C_air_man+C_eng_mtc+C_elec_air
 
 #FOC
 U_annual = (1.5e3)*((3.4546*t_b)+2.994-((12.289*(t_b)**2)-(5.6626*t_b)+8.964)**0.5)
 C_insurance = ((IR_a*C_aircraft)/U_annual)*t_b
 C_depreciation = (C_aircraft *(1-K_depreciation)*t_b)/(n*U_annual)
-doc_reg = C_elec+C_ML+C_MM+C_airframe_maintainance+U_annual+C_insurance+C_depreciation
+doc_reg = coc + U_annual+C_insurance+C_depreciation
 C_registration = (0.001+((10**-8)*W_mtow))*doc_reg
 
 foc = U_annual + C_insurance + C_depreciation + C_registration
