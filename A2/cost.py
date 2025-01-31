@@ -37,19 +37,19 @@ t_b = data.iloc[19,1] #mission block time in hours
 IR_a = data.iloc[20,1] #hull insurance rate usually assumed to be 2% according to metabook
 K_depreciation = data.iloc[21,1] #aircraft residual value factor
 n = data.iloc[22,1] #number of years the aircraft is used
-####INSERT BELOW VARIABLES INTO EXCEL#########
-W_f = 500 #Weight of fuel lbs
-P_f = 10 #price per gallon of jet fuel USD/gal
-rho_f = 10 # fuel density lbs/gal
-P_oil = 10 #cot er gallon of oil USD/gal
-rho_oil = 10 #density of oil
-SHP_TO = 1000 # takeoff shaft horsepower
-H_em = 4500 #number of hours between engine overhauls usually between 3000-5000
-c_motors = 500 # $150/hp using 2018 base year
-c_batteries = 1000 # $520/kWh using 2018 base year
+W_f = data.iloc[22,1]  # Weight of fuel lbs
+P_f = data.iloc[23,1]  # Price per gallon of jet fuel USD/gal
+rho_f = data.iloc[24,1]  # Fuel density lbs/gal
+P_oil = data.iloc[25,1]  # Cost per gallon of oil USD/gal
+rho_oil = data.iloc[26,1]  # Density of oil
+SHP_TO = data.iloc[27,1]  # Takeoff shaft horsepower
+H_em = data.iloc[28,1]  # Number of hours between engine overhauls (usually between 3000-5000)
+c_motors = data.iloc[29,1]  # $150/hp using 2018 base year
+c_batteries = data.iloc[30,1]  # $520/kWh using 2018 base year
 
 
-data_subset = data.iloc[25:32, 1:7]  # .iloc[row_start:row_end, col_start:col_end]
+
+data_subset = data.iloc[32:39, 1:7]  # .iloc[row_start:row_end, col_start:col_end]
 cost_parameters = data_subset.to_numpy()
 print(cost_parameters)
 
@@ -136,8 +136,8 @@ C_bat = 200*E_bat*cpi
 #Propeller Cost
 C_prop = 210*N_prop*cpi*D_p**2*(P_shp/D_p)**0.12
 
-#Cost of the Enginer ############################ KAYLA ADD LATER############
-C_engines = 0
+#Internal Combustion Engine Cost
+C_engines = 174*N_engine*P_ice*cpi
 
 #Misc. Cost
 C_lg = -7500*Q #fixed landing gear cost
