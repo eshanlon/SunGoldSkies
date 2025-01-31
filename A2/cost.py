@@ -125,19 +125,19 @@ def cost_analysis(filepath):
     C_mat = 24.896*W_airframe**0.689*V_max**0.624*Q**0.792*cpi*F_cert*F_cf*F_press*F_hye
 
     #Electric Motor Cost
-    C_em = 174*N_motor*P_em*cpi
+    C_em = 174*N_motor*P_em*cpi*Q
 
     #Power Management System Cost
-    C_pms = 150*P_em_total*cpi
+    C_pms = 150*P_em_total*cpi*Q
 
     #Battery Cost
-    C_bat = 200*E_bat*cpi
+    C_bat = 200*E_bat*cpi*Q
 
     #Propeller Cost
-    C_prop = 210*N_prop*cpi*D_p**2*(P_shp/D_p)**0.12
+    C_prop = 210*N_prop*cpi*D_p**2*(P_shp/D_p)**0.12*Q
 
     #Internal Combustion Engine Cost
-    C_engines = 174*N_engine*P_ice*cpi
+    C_engines = 174*N_engine*P_ice*cpi*Q
 
     #Misc. Cost
     C_lg = -7500*Q #fixed landing gear cost
