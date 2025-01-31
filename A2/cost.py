@@ -10,12 +10,6 @@ def cost_analysis(filepath):
     # Cost Analysis Calculations
 
 
-def cost_analysis(filepath):
-
-    # Cost Analysis
-    # Cost Analysis Calculations
-
-
     # Read the Excel file
     data = pd.read_excel(filepath, header=None)  # Read without headers if not needed
     excel = load_workbook(filepath)
