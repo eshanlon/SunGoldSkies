@@ -48,10 +48,12 @@ def cost_analysis(filepath):
     SHP_TO = data.iloc[28,1]  # Takeoff shaft horsepower
     H_em = data.iloc[29,1]  # Number of hours between engine overhauls (usually between 3000-5000)
     P_ice = data.iloc[30,1]  #ICE power
+    print(f'P_ice = {P_ice}')
 
     #Adjustment factors table
     data_subset = data.iloc[33:40, 1:7]  # .iloc[row_start:row_end, col_start:col_end]
     cost_parameters = data_subset.to_numpy()
+    print(cost_parameters)
 
     ###################### Development Costs #############################################################
     #Labor Rates
@@ -69,6 +71,7 @@ def cost_analysis(filepath):
     F_press = cost_parameters[0,4]
     F_hye = cost_parameters[0,5]
     C_eng = 0.083*W_airframe**0.791*V_max**1.521*Q**0.183*F_cert*F_cf*F_comp*F_press*F_hye*R_eng*cpi
+    print(C_eng)
 
     #Tooling Costs
     F_cert = cost_parameters[1,0]
@@ -78,6 +81,7 @@ def cost_analysis(filepath):
     F_press = cost_parameters[1,4]
     F_hye = cost_parameters[1,5]
     C_tool = 2.1036*W_airframe**0.764*V_max**0.899*Q**0.178*Q_m**0.066*F_taper*F_cf*F_comp*F_press*F_hye*R_tool*cpi
+    print(C_tool)
 
     #Manufacturing Costs
     F_cert = cost_parameters[2,0]
@@ -87,6 +91,7 @@ def cost_analysis(filepath):
     F_press = cost_parameters[2,4]
     F_hye = cost_parameters[2,5]
     C_manufacturing = 20.2588*W_airframe**0.74*V_max**0.543*Q**0.524*F_cert*F_cf*F_comp*F_hye*R_manufacturing*cpi
+    print(C_manufacturing)
 
     #Development Support Costs
     F_cert = cost_parameters[3,0]
@@ -96,6 +101,7 @@ def cost_analysis(filepath):
     F_press = cost_parameters[3,4]
     F_hye = cost_parameters[3,5]
     C_dev = 0.06458*W_airframe**0.873*V_max**1.89*Q**0.346*F_cert*F_cf*F_comp*F_press*F_hye*cpi
+    print(C_dev)
 
     #Flight Test Operations Costs
     F_cert = cost_parameters[4,0]
@@ -105,6 +111,7 @@ def cost_analysis(filepath):
     F_press = cost_parameters[4,4]
     F_hye = cost_parameters[4,5]
     C_ft = 0.009646*W_airframe**1.16*V_max**1.3718*Q**1.281*F_cert*F_hye*cpi
+    print(C_ft)
 
     #Quality Control Costs
     F_cert = cost_parameters[5,0]
@@ -114,6 +121,7 @@ def cost_analysis(filepath):
     F_press = cost_parameters[5,4]
     F_hye = cost_parameters[5,5]
     C_qc = 0.13*C_manufacturing*F_cert*F_comp*F_hye
+    print(C_qc)
 
     #Materials Cost
     F_cert = cost_parameters[6,0]
@@ -123,34 +131,38 @@ def cost_analysis(filepath):
     F_press = cost_parameters[6,4]
     F_hye = cost_parameters[6,5]
     C_mat = 24.896*W_airframe**0.689*V_max**0.624*Q**0.792*cpi*F_cert*F_cf*F_press*F_hye
+    print(C_mat)
 
     #Electric Motor Cost
-    C_em = 174*N_motor*P_em*cpi*Q
+    C_em = 174*N_motor*P_em*cpi
 
     #Power Management System Cost
-    C_pms = 150*P_em_total*cpi*Q
+    C_pms = 150*P_em_total*cpi
 
     #Battery Cost
-    C_bat = 200*E_bat*cpi*Q
+    C_bat = 200*E_bat*cpi
 
     #Propeller Cost
-    C_prop = 210*N_prop*cpi*D_p**2*(P_shp/D_p)**0.12*Q
+    C_prop = 210*N_prop*cpi*D_p**2*(P_shp/D_p)**0.12
 
     #Internal Combustion Engine Cost
-    C_engines = 174*N_engine*P_ice*cpi*Q
+    C_engines = 174*N_engine*P_ice*cpi
 
     #Misc. Cost
-    C_lg = -7500*Q #fixed landing gear cost
-    C_av = 4500*Q #avionics cost
+    C_lg = -7500 #fixed landing gear cost
+    C_av = 4500 #avionics cost
 
     #Quality Discount Factor
     F_exp = 0.95
     qdf = F_exp**(1.4427*math.log(Q))
 
     #Total Cost to Produce
-    C_total = C_eng+C_tool+C_manufacturing+C_dev+C_ft+C_qc+C_mat+C_em+C_pms+C_bat+C_prop+C_lg+C_av
+    C_total = C_eng+C_tool+C_manufacturing+C_dev+C_ft+C_qc+C_mat+Q*(C_em+C_pms+C_bat+C_prop+C_lg+C_av)
+    print(f'C_total = {C_total}')
     C_profit = (0.1*C_total)/Q
     C_aircraft = C_total/Q
+
+    C_rdte = C_eng+C_tool+C_manufacturing+C_dev+C_ft+C_qc+C_mat
 
     #Sales Price
     C_sales = C_aircraft+C_profit
@@ -194,7 +206,7 @@ def cost_analysis(filepath):
     #we are assuming maintenance costs are negligible (metabook says to)
 
     ########## Outputting to Excel ######################
-    cost_sheet["B44"] = C_total
+    cost_sheet["B44"] = C_rdte
     cost_sheet["B47"] = C_eng/Q
     cost_sheet["B48"] = C_tool/Q
     cost_sheet["B49"] = C_manufacturing/Q
@@ -202,12 +214,12 @@ def cost_analysis(filepath):
     cost_sheet["B51"] = C_ft/Q
     cost_sheet["B52"] = C_qc/Q
     cost_sheet["B53"] = C_mat/Q
-    cost_sheet["B54"] = C_em/Q
-    cost_sheet["B55"] = C_pms/Q
-    cost_sheet["B56"] = C_bat/Q
-    cost_sheet["B57"] = C_prop/Q
-    cost_sheet["B58"] = C_lg/Q
-    cost_sheet["B59"] = C_av/Q
+    cost_sheet["B54"] = C_em
+    cost_sheet["B55"] = C_pms
+    cost_sheet["B56"] = C_bat
+    cost_sheet["B57"] = C_prop
+    cost_sheet["B58"] = C_lg
+    cost_sheet["B59"] = C_av
     cost_sheet["B60"] = C_aircraft
     cost_sheet["B61"] = C_profit
     cost_sheet["B62"] = C_sales
