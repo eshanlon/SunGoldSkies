@@ -2,7 +2,7 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-def weight_estimation(Wcrew, Wpayload, Wo, batt_se, prop_eff, LD, max_interations = 20):
+def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, LD, max_interations = 20):
     iteration = 0
     g = 32.17 # ft/s^2
     R = 425328 # ft
@@ -13,11 +13,11 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, prop_eff, LD, max_interation
     convergedweight = []
     iterationcount = []
     v = 337.562 # ft/s
-    n_f = .83 # percent of power used for turboprop
+    n_f = .9 # percent of power used for turboprop
     n_b = 1 - n_f # percent of power used for battery
     while delta > err and iteration < max_interations:
         We_Wo = A * Wo ** C
-        m_batt = (R * Wo) / (prop_eff * batt_se * LD)
+        m_batt = (R * Wo) / (batt_eff * batt_se * LD)
         P_aircraft = v * (Wo / LD) # [ft-lbf/s]
         T = (P_aircraft) / (v) # [lbf]
         cb = 0.25 * (T / m_batt) * (1 / 3600) # [1/s]
@@ -56,11 +56,11 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, prop_eff, LD, max_interation
 
 Wcrew = 180 * 32.17 # lbm * g = lbf
 Wpayload = 2000 * 32.17 # lbm * g = lbf
-Wo = 8000 * 32.17 # lbm * g = lbf
+Wo = 9000 * 32.17 # lbm * g = lbf
 batt_se = 1204910.008 # ft-lbf/lbm
-prop_eff = 0.8
-LD = 10
-numiterations, converged_weight = weight_estimation(Wcrew, Wpayload, Wo, batt_se, prop_eff, LD)
+batt_eff = 0.905
+LD = 7
+numiterations, converged_weight = weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, LD)
 converged_weight = converged_weight
 plt.plot(numiterations, converged_weight, color="g", marker = "s", markersize=4, markerfacecolor="green")
 plt.title('Preliminary Estimation of Takeoff Weight (W\u2080)')
