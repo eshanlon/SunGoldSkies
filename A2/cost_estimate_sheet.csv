@@ -1,0 +1,9 @@
+Correction Factors Table,,,,,,
+CER Category,F_cert,F_comp,F_taper,F_cf,F_press,F_hye
+Engineering Cost,0.67,2,0,1.03,1.03,0
+Tooling Cost ,0,2,0.95,1.02,1.01,0
+Manufacturing Cost,0.75,1.25,0,1.01,0,0
+Development Support Cost,0.5,1.5,0,1.01,1.03,0
+Flight Test Support Cost,0.5,0,0,0,0,0
+Quality Control Cost,0.5,1.5,0,0,0,0
+Materials Cost,0.75,0,0,1.02,1.01,0
