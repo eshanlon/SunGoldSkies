@@ -162,7 +162,7 @@ def cost_analysis(filepath):
     C_profit = (0.1*C_total)/Q
     C_aircraft = C_total/Q
 
-    C_rdte = C_eng+C_tool+C_manufacturing+C_dev+C_ft+C_qc+C_mat
+    C_rdte = C_eng+C_dev+C_ft
 
     #Sales Price
     C_sales = C_aircraft+C_profit

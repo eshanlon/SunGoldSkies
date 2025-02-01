@@ -2,18 +2,18 @@
 import cost
 #import weight
 import matplotlib.pyplot as plt
-############## Design 1: D&L ##########################
+############## Design 1: Cost Analysis ##########################
 cost.cost_analysis('A2/cost_estimate_DL.xlsx')
 
 
-############## Design 2: E&K ###########################
+############## Design 2: Cost Analysis ###########################
 cost.cost_analysis('A2/cost_estimate_EK.xlsx')
 
 
-############## Design 3: A&C ###########################
+############## Design 3: Cost Analysis ###########################
 cost.cost_analysis('A2/cost_estimate_AC.xlsx')
 
-'''
+
 ############## Design 1: Weight Estimation #############
 Wcrew = 180 * 32.17 # lbm * g = lbf
 Wpayload = 2000 * 32.17 # lbm * g = lbf
@@ -50,6 +50,6 @@ plt.legend(loc='best')
 plt.xlabel('# of iterations')
 plt.ylabel('Preliminary Takeoff Weight [lbs]')
 plt.show()
-'''
+
 
 print("Analysis Done!")
