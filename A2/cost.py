@@ -157,7 +157,7 @@ def cost_analysis(filepath):
     qdf = F_exp**(1.4427*math.log(Q))
 
     #Total Cost to Produce
-    C_total = C_eng+C_tool+C_manufacturing+C_dev+C_ft+C_qc+C_mat+Q*(C_em+C_pms+C_bat+C_prop+C_lg+C_av)
+    C_total = C_eng+C_tool+C_dev+C_ft+C_qc+qdf*(C_mat+C_manufacturing+Q*(C_em+C_pms+C_bat+C_prop+C_lg+C_av))
     print(f'C_total = {C_total}')
     C_profit = (0.1*C_total)/Q
     C_aircraft = C_total/Q
