@@ -4,14 +4,6 @@ import os
 import matplotlib.pyplot as plt # type: ignore
 from matplotlib.lines import Line2D
 
-
-### JUPYTER NOTEBOOK SETTINGS ########################################
-#Plot all figures in full-size cells, no scroll bars
-#Disable Python Warning Output
-#(NOTE: Only for production, comment out for debugging)
-import warnings
-warnings.filterwarnings('ignore')
-### PLOTTING DEFAULTS BOILERPLATE (OPTIONAL) #########################
 #SET DEFAULT FIGURE APPERANCE
 import seaborn as sns # type: ignore #Fancy plotting package
 #No Background fill, legend font scale, frame on legend
@@ -26,7 +18,6 @@ sns.set_context(rc={'lines.markeredgewidth': 0.1})
 mplcolors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
 '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
 sns.set_palette(mplcolors)
-
 #Get color cycle for manual colors
 colors = sns.color_palette()
 #SET MATPLOTLIB DEFAULTS
@@ -97,15 +88,15 @@ S_wet = 10**(c+d*math.log10(W_to))
 f = 10**(a+b*math.log10(S_wet))
 C_Do = f/S
 
-
+# Gear is down for all drag polars
 # Clean drag polar
-C_D = C_Do + ((C_L**2)/(math.pi*e*AR))
+C_D = (C_Do+delta_CDo_landinggeardown) + ((C_L**2)/(math.pi*e_landinggeardown*AR))
 
 # Takeoff Flaps down drag polar
-C_D_takeoffflapsdown = (C_Do+delta_CDo_takeoffflapsdown) + ((C_L**2)/(math.pi*e_takeoffflapsdown*AR))
+C_D_takeoffflapsdown = (C_Do+delta_CDo_landinggeardown+delta_CDo_takeoffflapsdown) + ((C_L**2)/(math.pi*e_takeoffflapsdown*AR))
 
 # Landing Flaps down drag polar
-C_D_landingflapsdown = (C_Do+delta_CDo_landingflapsdown) + ((C_L**2)/(math.pi*e_landingflapsdown*AR))
+C_D_landingflapsdown = (C_Do+delta_CDo_landinggeardown+delta_CDo_landingflapsdown) + ((C_L**2)/(math.pi*e_landingflapsdown*AR))
 
 ############# Plotting ###########################
 # Plotting Cp Distribution for AOA = 8
@@ -113,11 +104,11 @@ plt.figure(figsize=(10, 6))
 plt.grid(True)
 plt.xlabel('$C_D$', fontsize=16)
 plt.ylabel('$C_L$', fontsize=16)
-plt.plot(C_D, C_L,label='Clean Drag Polar', color='red')
+plt.plot(C_D, C_L,label='Gear down, cruise', color='red')
 plt.plot(C_D, -C_L, color='red')
-plt.plot(C_D_takeoffflapsdown, C_L,label='Takeoff Flaps Down', color='green')
+plt.plot(C_D_takeoffflapsdown, C_L,label='Takeoff flaps, gear down', color='green')
 plt.plot(C_D_takeoffflapsdown, -C_L, color='green')
-plt.plot(C_D_landingflapsdown, C_L,label='Landing Flaps Down', color='blue')
+plt.plot(C_D_landingflapsdown, C_L,label='Landing flaps, gear down', color='blue')
 plt.plot(C_D_landingflapsdown, -C_L, color='blue')
 plt.title('Drag Polar', fontsize=16)
 plt.legend(loc='best')
