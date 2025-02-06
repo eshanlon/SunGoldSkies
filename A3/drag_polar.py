@@ -60,11 +60,13 @@ colors = sns.color_palette() #color cycle
 AR = 7.32
 W_to = 3100 #lb
 S = 174 #ft^2
-C_Lmax = 2.2
-C_L = np.linspace(0,C_Lmax,100)
 
 ############ Inputs Based on Roskam Tables #######################
-# From figure 2.31a (same c_f as Cessna 180 and P-35, comparable aircraft)
+# From table 3.1 (pg. 91)
+C_Lmax = 1.3
+C_Lmax_to = 1.65
+C_Lmax_l = 1.9
+# From figure 3.21a (same c_f as Cessna 180 and P-35, comparable aircraft)
 c_f = 0.0060
 # From tables 3.4 and 3.5 (pg. 122)
 a = -2.2218 # for c_f = 0.006
@@ -90,13 +92,16 @@ C_Do = f/S
 
 # Gear is down for all drag polars
 # Clean drag polar
+C_L = np.linspace(0,C_Lmax,100)
 C_D = (C_Do+delta_CDo_landinggeardown) + ((C_L**2)/(math.pi*e_landinggeardown*AR))
 
 # Takeoff Flaps down drag polar
-C_D_takeoffflapsdown = (C_Do+delta_CDo_landinggeardown+delta_CDo_takeoffflapsdown) + ((C_L**2)/(math.pi*e_takeoffflapsdown*AR))
+C_L_to = np.linspace(0,C_Lmax_to,100)
+C_D_takeoffflapsdown = (C_Do+delta_CDo_landinggeardown+delta_CDo_takeoffflapsdown) + ((C_L_to**2)/(math.pi*e_takeoffflapsdown*AR))
 
 # Landing Flaps down drag polar
-C_D_landingflapsdown = (C_Do+delta_CDo_landinggeardown+delta_CDo_landingflapsdown) + ((C_L**2)/(math.pi*e_landingflapsdown*AR))
+C_L_l = np.linspace(0,C_Lmax_l,100)
+C_D_landingflapsdown = (C_Do+delta_CDo_landinggeardown+delta_CDo_landingflapsdown) + ((C_L_l**2)/(math.pi*e_landingflapsdown*AR))
 
 ############# Plotting ###########################
 # Plotting Cp Distribution for AOA = 8
@@ -106,10 +111,10 @@ plt.xlabel('$C_D$', fontsize=16)
 plt.ylabel('$C_L$', fontsize=16)
 plt.plot(C_D, C_L,label='Gear down, cruise', color='red')
 plt.plot(C_D, -C_L, color='red')
-plt.plot(C_D_takeoffflapsdown, C_L,label='Takeoff flaps, gear down', color='green')
-plt.plot(C_D_takeoffflapsdown, -C_L, color='green')
-plt.plot(C_D_landingflapsdown, C_L,label='Landing flaps, gear down', color='blue')
-plt.plot(C_D_landingflapsdown, -C_L, color='blue')
+plt.plot(C_D_takeoffflapsdown, C_L_to,label='Takeoff flaps, gear down', color='green')
+plt.plot(C_D_takeoffflapsdown, -C_L_to, color='green')
+plt.plot(C_D_landingflapsdown, C_L_l,label='Landing flaps, gear down', color='blue')
+plt.plot(C_D_landingflapsdown, -C_L_l, color='blue')
 plt.title('Drag Polar', fontsize=16)
 plt.legend(loc='best')
 plt.show()
