@@ -61,3 +61,20 @@ def sustained_turn(q, CDo, k, n):
     T_W = []
     W_Sref = np.linspace(1, 300, 50)
     T_W = ((q * CDo) * (1 / W_Sref)) + (k(n**2/q)*W_Sref)
+    return T_W
+
+def density(h, R):
+    #
+    #
+    #
+    #
+    #
+    lamb = 6.5 #[K/km]
+    h = 1000 #[m]
+    To = 288.15 #[K]
+    g = 9.81 #[m/s^2]
+    R = 287 #[J/kg*K]
+
+    rho_rhoo = (1 + ((lamb * h)/ To))**(-((g/ (R * lamb)) + 1))
+    return = rho_rhoo
+    
