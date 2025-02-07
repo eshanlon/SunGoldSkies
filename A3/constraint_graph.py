@@ -9,27 +9,36 @@ def stall_speed(rho, vstall, CLmax):
     W_Sref = 1/2 * rho * (vstall**2) * CLmax
     return W_Sref
 
-def takeoff_distance(rho_rhoo, CLmaxTO, W_Sref, rho, prop_eff):
+def takeoff_distance(rho_rhoo, vTO, CLmaxTO, W_Sref, rho, prop_eff):
     #rho_rhoo = Density ratio for alt
     #CLmaxTO = CL of choice
     #BFL = ?
     #W_sref = Wing loading obtained 
     #rho = Air density of choice
     #prop_eff = Propeller effiency
-    WTO_Sref = .5 * rho * (vTO**2) *
+    P_W = 0.09 # From historical data
+    TTO_WTO = (prop_eff / vTO) * P_W
+    WTO_Sref = .5 * rho * (vTO**2) * CLmaxTO
     TOP = WTO_Sref / (rho_rhoo * CLmaxTO * TTO_WTO)
+    BFL = TOP * 37.5
     T_W = []
-    W_Sref = np.linspace(1, 300, 50)
-    T_W = W_Sref * (1 / (rho_rhoo * CLmaxTO * (TOP * 37.5)))
-    v = math.sqrt((2 * W_Sref) / (rho * CLmaxTO))
+    v = []
+    W_S = np.linspace(1, 300, 50)
+    T_W = W_S * (1 / (rho_rhoo * CLmaxTO * (BFL)))
+    v = math.sqrt((2 * W_S) / (rho * CLmaxTO))
     W_P = prop_eff / (T_W * v)
     return W_P
 
-def landingfield_length(rho_rhoo, CLmaxL, Sa, BFL):
+def landingfield_length(rho_rhoo, CLmaxL, Sa, prop_eff, vL, rho):
     #rho = Density of desired alt
     #CL_maxL = CL during landing
     #Sa = Braking distance
     #0.65 = Macimum landing to takeoff weight ratio(needs to be changed)
+    P_W = 0.09 # From historical data
+    TTO_WTO = (prop_eff / vL) * P_W
+    WTO_Sref = .5 * rho * (vL**2) * CLmaxL
+    TOP = WTO_Sref / (rho_rhoo * CLmaxL * TTO_WTO)
+    BFL = TOP * 37.5
     Sland = BFL * 0.6
     W_S = rho_rhoo * CLmaxL * (Sland - Sa) / (80 * 0.65)
 
@@ -65,7 +74,7 @@ def cruise_speed(v, CDo, e, AR, W_Sref, CLcruise, rho, prop_eff):
     k = 1 / (np.pi * e * AR)
     T_W = []
     W_S = np.linspace(1, 300, 50)
-    T_w = ((qcr * CDo) * (1 / W_Sref)) + ((k / qcr) * W_Sref)
+    T_w = ((qcr * CDo) * (1 / W_S)) + ((k / qcr) * W_S)
     v = math.sqrt((2 * W_Sref) / (rho * CLcruise))
     W_P = prop_eff / (T_W * v)
     return W_P
@@ -74,6 +83,7 @@ def absolute_ceiling(e, AR, CDo):
     #e = Wing efficiency ratio
     #AR = Aspect Ratio
     #CDo = Minimum drag coefficent
+    k = 1 / (np.pi * e * AR)
     T_W = 2 * math.sqrt(k * CDo)
     return T_W
 
@@ -87,7 +97,7 @@ def sustained_turn(q, CDo, k, n):
     T_W = ((q * CDo) * (1 / W_Sref)) + (k(n**2/q)*W_Sref)
     return T_W
 
-def density(h):
+def density_ratio(h):
     #h = height[m]
     #
     #
@@ -100,9 +110,10 @@ def density(h):
 
     rho_rhoo = (1 + ((lamb * h)/ To))**(-((g/ (R * lamb)) + 1))
     return rho_rhoo
-
+rho_rhoo = density_ratio(1)
+W_P = takeoff_distance(rho_rhoo, vTO = 135.025, CLmaxTO = 1.4, W_Sref = 300, rho = 0.002377, prop_eff = 0.7)
 W_S = np.linspace(1, 500, 50)
-plt.plot(, W_S, color="g", marker = "s", markersize=1, markerfacecolor="green")
+plt.plot(W_P, W_S, color="g", marker = "s", markersize=1, markerfacecolor="green")
 plt.title('Preliminary Sizing')
 plt.legend(loc='best')
 plt.xlabel('W/S')
