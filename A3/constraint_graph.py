@@ -32,28 +32,37 @@ def takeoff_distance(rho_rhoo, vstall, CLmaxTO, rho, prop_eff):
     #W_sref = Wing loading obtained 
     #rho = Air density of choice
     #prop_eff = Propeller effiency
+    n = 100
     ks = 1.1 # estimation
     vTO = vstall * ks
-    P_W = .3 # From historical data
-    TTO_WTO = (prop_eff / vTO) * P_W
+    P_W = .05 # From historical data
+    #TTO_WTO = (prop_eff / vTO) * P_W
     WTO_Sref = .5 * rho * (vTO**2) * CLmaxTO
-    TOP = WTO_Sref / (rho_rhoo * CLmaxTO * TTO_WTO)
+    TOP = WTO_Sref / (rho_rhoo * CLmaxTO * P_W)
     BFL = TOP * 37.5
-    T_W = []
-    v = []
-    W_P = []
-    W_S = np.linspace(1, 300, 50)
-    T_W = W_S * (1 / (rho_rhoo * CLmaxTO * (BFL)))
-    print(TOP)
-    v = math.sqrt((2 * W_S) / (rho * CLmaxTO))
-    W_P = prop_eff / (T_W * v)
-    return W_P
+    T_W = np.zeros(n)
+    v = np.zeros(n)
+    W_P = np.zeros(n)
+    W_S = np.linspace(1, 300, n)
+    for i in range(len(W_S)):
+        T_W[i] = W_S[i] * (1 / (rho_rhoo * CLmaxTO * (TOP)))
+    print(T_W)
+    for i in range(len(W_S)):
+        v[i] = math.sqrt((2 * W_S[i]) / (rho * CLmaxTO))
+        W_P[i] = prop_eff / (T_W[i] * v[i])
+    print(v)
+    print(W_P)
+    return W_P, T_W
 
 rho_rhoo = density_ratio(1)
 
-W_P = takeoff_distance(rho_rhoo, vstall = 118.147, CLmaxTO = 1.4, rho = 0.002377, prop_eff = 0.7)
-W_S = np.linspace(1, 500, 50)
-plt.plot(W_P, W_S, color="g", marker = "s", markersize=1, markerfacecolor="green")
+W_P, T_W = takeoff_distance(rho_rhoo, vstall = 118.147, CLmaxTO = 1.4, rho = 0.002377, prop_eff = 0.7)
+W_P1, T_W1 = takeoff_distance(rho_rhoo, vstall = 118.147, CLmaxTO = 1.9, rho = 0.002377, prop_eff = 0.7)
+W_S = np.linspace(1, 50, 100)
+plt.plot(W_S, W_P, color="g", marker = "s", markersize=1, markerfacecolor="green")
+plt.plot(W_S, W_P1, color="r", marker = "s", markersize=1, markerfacecolor="red")
+plt.xlim(10,50)
+plt.ylim(0, 6)
 plt.title('Preliminary Sizing')
 plt.legend(loc='best')
 plt.xlabel('W/S')
