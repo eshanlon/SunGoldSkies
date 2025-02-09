@@ -1,3 +1,4 @@
+
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -9,21 +10,34 @@ def stall_speed(rho, vstall, CLmax):
     W_Sref = 1/2 * rho * (vstall**2) * CLmax
     return W_Sref
 
-def takeoff_distance(rho_rhoo, CLmaxTO, W_Sref, rho, prop_eff):
-    #rho_rhoo = Density ratio for alt
+
+def takeoff_distance(rho_rhoo, CLmaxTO, W_Sref_cap, prop_eff):
+    #rho_rhoo = Density ratio for alt"""
+
     #CLmaxTO = CL of choice
-    #BFL = ?
+    #BFL = ? (TO SOLVE)
     #W_sref = Wing loading obtained 
     #rho = Air density of choice
-    #prop_eff = Propeller effiency
-    WTO_Sref = .5 * rho * (vTO**2) *
-    TOP = WTO_Sref / (rho_rhoo * CLmaxTO * TTO_WTO)
-    T_W = []
-    W_Sref = np.linspace(1, 300, 50)
-    T_W = W_Sref * (1 / (rho_rhoo * CLmaxTO * (TOP * 37.5)))
-    v = math.sqrt((2 * W_Sref) / (rho * CLmaxTO))
-    W_P = prop_eff / (T_W * v)
-    return W_P
+    Ks = 1.1 #Estimation
+    rho_sl = 0.002377 #[slugs/ft^3]
+    vstall = 118.15 #[ft/s], 70 [kts], estimation
+    prop_eff = prop_eff #Propeller effiency, estimation. 0.7 works.
+    P_W = 0.09 #[hp/lb] Lecture 5, Slide 31
+    vTO = Ks * vstall
+    Tto_Wto = (prop_eff/vTO) * P_W
+    Wto_Sref = .5 * (rho_rhoo * rho_sl) * (vTO**2) * CLmaxTO #At runway height
+    TOP_25 = Wto_Sref / (rho_rhoo * CLmaxTO * Tto_Wto)
+    BFL = 37.5 * TOP_25
+    #T_W = []
+    WTO_Sref = np.linspace(1, W_Sref_cap, 100)
+    TTO_WTO = (37.5 / (BFL * rho_rhoo * CLmaxTO)) * WTO_Sref
+    print(TTO_WTO)
+    
+    return WTO_Sref, TTO_WTO
+
+
+
+
 
 def landingfield_length(rho_rhoo, CLmaxL, Sa, BFL):
     #rho = Density of desired alt
@@ -88,22 +102,26 @@ def sustained_turn(q, CDo, k, n):
     return T_W
 
 def density(h):
-    #h = height[m]
+    # Density Correction Equation. Pulled from Lecture 7 Slide 15.
+    # Equation originally in [SI]. Converted to English Units.
+    # h = height[ft]
     #
     #
     #
     #
-    lamb = 0.0065 #[K/m]
-    To = 288.15 #[K]
-    g = 9.81 #[m/s^2]
-    R = 287 #[J/kg*K]
+    lamb = 0.00357 #[F/ft]
+    To = 59 #[F]
+    g = 32.19 #[ft/s^2]
+    R = 14.50 #[ft*lbf/(slug*F)]
+
 
     rho_rhoo = (1 + ((lamb * h)/ To))**(-((g/ (R * lamb)) + 1))
     return rho_rhoo
 
-W_S = np.linspace(1, 500, 50)
-plt.plot(, W_S, color="g", marker = "s", markersize=1, markerfacecolor="green")
-plt.title('Preliminary Sizing')
+#Calling and Graphing takeoff_distance() function results. 
+WTO_Sref, TTO_WTO = takeoff_distance(density(52), 1.4, 50, 0.7)
+plt.plot(WTO_Sref, TTO_WTO, color="g", marker = "s", markersize=1, markerfacecolor="green")
+plt.title('Takeoff Distance')
 plt.legend(loc='best')
 plt.xlabel('W/S')
 plt.ylabel('W/P')
