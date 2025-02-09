@@ -24,16 +24,17 @@ def takeoff_distance(rho_rhoo, CLmaxTO, W_Sref_cap, prop_eff):
     prop_eff = prop_eff #Propeller effiency, estimation. 0.7 works.
     P_W = 0.09 #[hp/lb] Lecture 5, Slide 31
     vTO = Ks * vstall
-    Tto_Wto = (prop_eff/vTO) * P_W
     Wto_Sref = .5 * (rho_rhoo * rho_sl) * (vTO**2) * CLmaxTO #At runway height
+    #v = math.sqrt((2/(rho_sl*CLmaxTO))* Wto_Sref)
+    Tto_Wto = (prop_eff/vTO) * P_W
     TOP_25 = Wto_Sref / (rho_rhoo * CLmaxTO * Tto_Wto)
     BFL = 37.5 * TOP_25
     #T_W = []
     WTO_Sref = np.linspace(1, W_Sref_cap, 100)
-    TTO_WTO = (37.5 / (BFL * rho_rhoo * CLmaxTO)) * WTO_Sref
-    print(TTO_WTO)
+    WTO_PTO = ((BFL * rho_rhoo * CLmaxTO * (prop_eff/np.sqrt((2/(rho_rhoo*rho_sl*CLmaxTO))*WTO_Sref)))/(37.5 * WTO_Sref))
     
-    return WTO_Sref, TTO_WTO
+    print(WTO_PTO)
+    return WTO_Sref, WTO_PTO
 
 
 
