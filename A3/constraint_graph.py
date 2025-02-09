@@ -19,6 +19,8 @@ def density_ratio(h):
 def stall_speed(rho, vstall, CLmax):
     #rho = The density of desired alt
     #v_stall = Maximum stall speed set by the far requirment. Can also set stall lower speed
+    #rho = The density of desired alt
+    #v_stall = Maximum stall speed set by the far requirment. Can also set stall lower speed
     #CL_max = 1.3-1.9
     W_Sref = 1/2 * rho * (vstall**2) * CLmax
     return W_Sref
