@@ -112,8 +112,7 @@ def cruise_speed(v, CDo, e, AR, W_Sref, CLcruise, rho, prop_eff):
     W_P = prop_eff / (T_W * v)
     return W_P
 
-def absolute_ceiling(e, AR, CDo):]
-[\
+def absolute_ceiling(e, AR, CDo):
     #e = Wing efficiency ratio
     #AR = Aspect Ratio
     #CDo = Minimum drag coefficent
