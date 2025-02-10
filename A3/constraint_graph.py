@@ -52,7 +52,7 @@ def takeoff_distance(rho_rhoo, vstall, CLmaxTO, rho, prop_eff):
     for i in range(len(W_S)):
         v[i] = math.sqrt((2 * W_S[i]) / (rho * CLmaxTO))
         W_P[i] = prop_eff / (T_W[i] * v[i])
-    return W_P, W_S
+    return W_S, W_P
 
 rho_rhoo = density_ratio(1)
 
@@ -70,10 +70,8 @@ def landingfield_length(rho_rhoo, CLmaxL, Sa, prop_eff, vstall, rho):
     BFL = TOP * 37.5
     Sland = BFL * 0.6
     W_S = np.zeros(100)
-    W_S = rho_rhoo * CLmaxL * (Sland - Sa) / (80 * 0.65)
-    W_S = np.zeros(100)
     for i in range(len(W_S)):
-        W_S[i] = 1/2 * rho * (vstall**2) * CLmaxL
+        W_S[i] = rho_rhoo * CLmaxL * (Sland - Sa) / (80 * 0.65)
     W_P = np.linspace(1, 50, 100)
     return W_S, W_P
 
@@ -94,7 +92,7 @@ def climb(ks, CLmaxCL, CDo, e, AR, W_Sref, rho, prop_eff):
     W_P = prop_eff / (T_W * v)
     return W_P
 
-def cruise_speed(v, CDo, e, AR, W_Sref, CLcruise, rho, prop_eff):
+def cruise_speed(v, CDo, e, AR, CLcruise, rho, prop_eff):
     #v = Velocity during cruise
     #CDo = Minimum drag coefficent
     #e = Wing efficiency ratio
@@ -105,20 +103,26 @@ def cruise_speed(v, CDo, e, AR, W_Sref, CLcruise, rho, prop_eff):
     #CLcruise = CL during cruise
     qcr = 0.5 * rho * (v**2)
     k = 1 / (np.pi * e * AR)
-    T_W = []
+    T_W = np.zeros(100)
+    v = np.zeros(100)
     W_S = np.linspace(1, 50, 100)
-    T_w = ((qcr * CDo) * (1 / W_S)) + ((k / qcr) * W_S)
-    v = math.sqrt((2 * W_Sref) / (rho * CLcruise))
-    W_P = prop_eff / (T_W * v)
-    return W_P
+    for i in range(len(W_S)):
+        T_W[i] = ((qcr * CDo) * (1 / W_S[i])) + ((k / qcr) * W_S[i])
+    for i in range(len(W_S)):
+        v[i] = math.sqrt((2 * W_S[i]) / (rho * CLcruise))
+        W_P[i] = prop_eff / (T_W[i] * v[i])
+    return W_S, W_P
 
-def absolute_ceiling(e, AR, CDo):
+def absolute_ceiling(e, AR, CDo, rho, CLmaxCL, prop_eff):
     #e = Wing efficiency ratio
     #AR = Aspect Ratio
     #CDo = Minimum drag coefficent
     k = 1 / (np.pi * e * AR)
     T_W = 2 * math.sqrt(k * CDo)
-    return T_W
+    W_S = np.linspace(1, 50, 100)
+    v = math.sqrt((2 * W_S) / (rho * CLmaxCL))
+    W_P = prop_eff / (T_W * v)
+    return W_P
 
 def sustained_turn(q, CDo, k, n):
     #
@@ -132,9 +136,13 @@ def sustained_turn(q, CDo, k, n):
 
 W_P, W_S = takeoff_distance(rho_rhoo, vstall = 118.147, CLmaxTO = 1.2, rho = 0.002377, prop_eff = 0.7)
 W_S1, W_P1 = stall_speed(rho = 0.002377, vstall = 118.147, CLmax = 1.3)
-print(W_S1)
+W_S2, W_P2 = landingfield_length(rho_rhoo, CLmaxL = 1.3, Sa = 1000, prop_eff = 0.7, vstall = 118.147, rho = 0.002377)
+#W_S3, W_P3 = cruise_speed(v = 250, CDo = 0.03, e = 0.8, AR = 8, CLcruise = 1.2, rho = 0.002377, prop_eff = 0.7)
+#print(W_S3)
 plt.plot(W_S, W_P, color="g", marker = "s", markersize=1, markerfacecolor="green")
 plt.plot(W_S1, W_P1, color="r", marker = "s", markersize=1, markerfacecolor="red")
+plt.plot(W_S2, W_P2, color="b", marker = "s", markersize=1, markerfacecolor="red")
+#plt.plot(W_S3, W_P3, color="g", marker = "s", markersize=1, markerfacecolor="red")
 plt.xlim(10,80)
 plt.ylim(0, 60)
 plt.title('Preliminary Sizing')
