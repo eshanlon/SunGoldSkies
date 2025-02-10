@@ -125,11 +125,18 @@ def absolute_ceiling(e, AR, CDo, rho, CLmaxCL, prop_eff):
     #AR = Aspect Ratio
     #CDo = Minimum drag coefficent
     k = 1 / (np.pi * e * AR)
-    T_W = 2 * math.sqrt(k * CDo)
     W_S = np.linspace(1, 50, 100)
-    v = math.sqrt((2 * W_S) / (rho * CLmaxCL))
-    W_P = prop_eff / (T_W * v)
-    return W_P
+    T_W = np.zeros(100)
+    W_P = np.zeros(100)
+    v = np.zeros(100)
+    for i in range(len(W_S)):
+        T_W[i] = 2 * math.sqrt(k * CDo)
+    print(T_W)
+    for i in range(len(W_S)):
+        v[i] = math.sqrt((2 * W_S[i]) / (rho * CLmaxCL))
+        print(v)
+        W_P[i] = prop_eff / (T_W[i] * v[i])
+    return W_S, W_P
 
 def sustained_turn(q, CDo, k, n):
     #
@@ -144,12 +151,14 @@ def sustained_turn(q, CDo, k, n):
 #W_P, W_S = takeoff_distance(rho_rhoo, vstall = 101.269, CLmaxTO = 1.2, rho = 0.002377, prop_eff = 0.7)
 #W_S1, W_P1 = stall_speed(rho = 0.002377, vstall = 101.269, CLmax = 1.3)
 #W_S2, W_P2 = landingfield_length(rho_rhoo, CLmaxL = 1.3, Sa = 600, prop_eff = 0.7, vstall = 101.269, rho = 0.002377)
-W_S3, W_P3 = cruise_speed(v = 250, CDo = 0.03, e = 0.8, AR = 8, CLcruise = 1.2, rho = 0.002377, prop_eff = 0.7)
-print(W_S3)
+#W_S3, W_P3 = cruise_speed(v = 250, CDo = 0.03, e = 0.8, AR = 8, CLcruise = 1.2, rho = 0.002377, prop_eff = 0.7)
+W_S4, W_P4 = absolute_ceiling(e = 0.8, AR = 8, CDo = 0.03, rho = 0.002377, CLmaxCL = 1.2, prop_eff = 0.7)
+print(W_P4)
 #plt.plot(W_S, W_P, color="g", marker = "s", markersize=1, markerfacecolor="green")
 #plt.plot(W_S1, W_P1, color="r", marker = "s", markersize=1, markerfacecolor="red")
 #plt.plot(W_S2, W_P2, color="b", marker = "s", markersize=1, markerfacecolor="red")
-plt.plot(W_S3, W_P3, color="g", marker = "s", markersize=1, markerfacecolor="red")
+#plt.plot(W_S3, W_P3, color="g", marker = "s", markersize=1, markerfacecolor="red")
+plt.plot(W_S4, W_P4, color="r", marker = "s", markersize=1, markerfacecolor="red")
 plt.xlim(10,90)
 plt.ylim(0, 60)
 plt.title('Preliminary Sizing')
