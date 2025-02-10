@@ -138,26 +138,35 @@ def absolute_ceiling(e, AR, CDo, rho, CLmaxCL, prop_eff):
         W_P[i] = prop_eff / (T_W[i] * v[i])
     return W_S, W_P
 
-def sustained_turn(q, CDo, k, n):
+def sustained_turn(q, CDo, rho, v, e, AR n, CL, prop_eff):
     #
     #
     #
     #
-    T_W = []
-    W_Sref = np.linspace(1, 300, 50)
-    T_W = ((q * CDo) * (1 / W_Sref)) + (k(n**2/q)*W_Sref)
+    k = 1 / (np.pi * e * AR)
+    qst = 0.5 * rho * (v**2)
+    T_W = np.zeros(100)
+    W_P = np.zeros(100)
+    W_S = np.linspace(1, 50, 100)
+    for i in range(len(W_S)):
+        T_W[i] = ((q * CDo) * (1 / W_S[i])) + (k(n**2/qst)*W_S[i])
+    for i in range(len(W_S)):
+        v[i] = math.sqrt((2 * W_S[i]) / (rho * CL))
+        print(v)
+        W_P[i] = prop_eff / (T_W[i] * v[i])
     return T_W
 
-#W_P, W_S = takeoff_distance(rho_rhoo, vstall = 101.269, CLmaxTO = 1.2, rho = 0.002377, prop_eff = 0.7)
-#W_S1, W_P1 = stall_speed(rho = 0.002377, vstall = 101.269, CLmax = 1.3)
-#W_S2, W_P2 = landingfield_length(rho_rhoo, CLmaxL = 1.3, Sa = 600, prop_eff = 0.7, vstall = 101.269, rho = 0.002377)
-#W_S3, W_P3 = cruise_speed(v = 250, CDo = 0.03, e = 0.8, AR = 8, CLcruise = 1.2, rho = 0.002377, prop_eff = 0.7)
+W_P, W_S = takeoff_distance(rho_rhoo, vstall = 101.269, CLmaxTO = 1.2, rho = 0.002377, prop_eff = 0.7)
+W_S1, W_P1 = stall_speed(rho = 0.002377, vstall = 101.269, CLmax = 1.3)
+W_S2, W_P2 = landingfield_length(rho_rhoo, CLmaxL = 1.3, Sa = 600, prop_eff = 0.7, vstall = 101.269, rho = 0.002377)
+W_S3, W_P3 = cruise_speed(v = 250, CDo = 0.03, e = 0.8, AR = 8, CLcruise = 1.2, rho = 0.002377, prop_eff = 0.7)
 W_S4, W_P4 = absolute_ceiling(e = 0.8, AR = 8, CDo = 0.03, rho = 0.002377, CLmaxCL = 1.2, prop_eff = 0.7)
-print(W_P4)
-#plt.plot(W_S, W_P, color="g", marker = "s", markersize=1, markerfacecolor="green")
-#plt.plot(W_S1, W_P1, color="r", marker = "s", markersize=1, markerfacecolor="red")
-#plt.plot(W_S2, W_P2, color="b", marker = "s", markersize=1, markerfacecolor="red")
-#plt.plot(W_S3, W_P3, color="g", marker = "s", markersize=1, markerfacecolor="red")
+sustained_turn(CDo = 0.03, rho = 0.002377, v = 250, e = 0.8, AR = 8, n = .5, CL = 1.2, prop_eff = 0.7)
+#print(W_P4)
+plt.plot(W_S, W_P, color="g", marker = "s", markersize=1, markerfacecolor="green")
+plt.plot(W_S1, W_P1, color="r", marker = "s", markersize=1, markerfacecolor="red")
+plt.plot(W_S2, W_P2, color="b", marker = "s", markersize=1, markerfacecolor="red")
+plt.plot(W_S3, W_P3, color="g", marker = "s", markersize=1, markerfacecolor="red")
 plt.plot(W_S4, W_P4, color="r", marker = "s", markersize=1, markerfacecolor="red")
 plt.xlim(10,90)
 plt.ylim(0, 60)
