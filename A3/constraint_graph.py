@@ -62,16 +62,24 @@ def landingfield_length(rho_rhoo, CLmaxL, Sa):
     W_P = np.linspace(1, 60, 100)
     return W_S, W_P
 
-def climb(rho_rhoo, LD, W_Sref_cap, prop_eff, W_TO, vstall):
-    #CLmaxCL - CL during climb
-    #W_sref = Wing loading obtained 
+def climb(AR, e, CDo, W_Sref_cap, prop_eff, rho , CLmaxCL):
+    #CDo = Minimum drag coefficent
+    #e = Wing efficiency ratio, .7 for rectangular wings, 1 for elliptical
+    #AR = Aspect Ratio from AT502
     #rho = Freestream Air density of choice
     #prop_eff = Propeller effiency
+    ks =1.3
+    k = 1 / (np.pi * e * AR)
     G = 0.083 #FAR23 requiremnt
-    rho = 0.002378 #[slug/ft^3]
-    CLmaxCL = (2 * W_TO) / (vstall**2 * rho)
+    T_W = np.zeros(100)
+    WCL_PCL = np.zeros(100)
+    v = np.zeros(100)
     WTO_Sref_Cl = np.linspace(10, W_Sref_cap, 100)
-    WCL_PCL = (18.97 * prop_eff * rho_rhoo * np.sqrt(CLmaxCL)) / ((G + (LD**-1)) * np.sqrt(WTO_Sref_Cl))
+    for i in range(len(WTO_Sref_Cl)):
+        T_W[i] = ((ks**2 * CDo)/(CLmaxCL) + (k * (CLmaxCL/ks**2)) + G)
+    for i in range(len(WTO_Sref_Cl)):
+        v[i] = math.sqrt((2 * WTO_Sref_Cl[i]) / (rho * CLmaxCL))
+        WCL_PCL[i] = prop_eff * 550 / (T_W[i] * v[i])
     return WTO_Sref_Cl, WCL_PCL
 
 def cruise_speed(v, CDo, e, AR, rho, prop_eff):
@@ -129,8 +137,9 @@ def sustained_turn(CDo, rho, v, e, AR, R, CL, prop_eff):
         W_P[i] = prop_eff *550 / (T_W[i] * v[i])
     return W_S, W_P
 
-WTO_Sref_Cl, WCL_PCL = climb(rho_rhoo = density_ratio(100), LD = 8, W_Sref_cap = 100, prop_eff = 0.7, W_TO = 13757, vstall = 118.147)
-WTO_Sref_Cl2, WCL_PCL2 = climb(rho_rhoo = density_ratio(50), LD = 7, W_Sref_cap = 100, prop_eff = 0.7, W_TO = 13757, vstall = 118.147)
+WTO_Sref_Cl, WCL_PCL = climb(AR = 8, e = 0.7, CDo = 0.03, W_Sref_cap = 100, prop_eff = 0.7, rho = (density_ratio(152) * 0.002378) , CLmaxCL = 1.3)
+WTO_Sref_Cl2, WCL_PCL2 = climb(AR = 8, e = 0.7, CDo = 0.03, W_Sref_cap = 100, prop_eff = 0.7, rho = (density_ratio(609) * 0.002378) , CLmaxCL = 1.3)
+WTO_Sref_Cl3, WCL_PCL3 = climb(AR = 8, e = 0.7, CDo = 0.03, W_Sref_cap = 100, prop_eff = 0.7, rho = (density_ratio(914) * 0.002378) , CLmaxCL = 1.3)
 W_S, W_P = takeoff_distance(rho_rhoo = density_ratio(10), CLmaxTO = 1.4, W_Sref_cap = 100, prop_eff = 0.7)
 W_S1, W_P1 = stall_speed(rho = 0.002377, vstall = 118.147, CLmax = 1.9)
 W_S2, W_P2 = landingfield_length(rho_rhoo, CLmaxL = 1.3, Sa = 600)
@@ -139,6 +148,7 @@ W_S4, W_P4 = absolute_ceiling(e = 0.7, AR = 8, CDo = 0.03, rho = 0.00176, CLmaxC
 W_S5, W_P5 = sustained_turn(CDo = 0.03, rho = 0.002242, v = 250, e = 0.7, AR = 8, R = 1000, CL = 1.2, prop_eff = 0.7) #rho = density 2000ft
 plt.plot(WTO_Sref_Cl, WCL_PCL, color = "#FF0000", marker = "s", markersize=1, label = "Climb1 Req")
 plt.plot(WTO_Sref_Cl2, WCL_PCL2, color = "#CC0000", marker = "s", markersize=1, label = "Climb2 Req")
+plt.plot(WTO_Sref_Cl3, WCL_PCL3, color = "#FF9999", marker = "s", markersize=1, label = "Climb3 Req")
 plt.plot(W_S, W_P, color="#FF8000", marker = "s", markersize=1, label = "Takeoff Distance Req")
 plt.plot(W_S1, W_P1, color="#0080FF", marker = "s", markersize=1, label = "Stall Req")
 plt.plot(W_S2, W_P2, color="#FF00FF", marker = "s", markersize=1, label = "Landingfield Length Req")
