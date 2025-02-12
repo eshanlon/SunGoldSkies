@@ -118,10 +118,13 @@ def absolute_ceiling(e, AR, CDo, rho, CLmaxCL, prop_eff):
     return W_S, W_P
 
 def sustained_turn(CDo, rho, v, e, AR, R, CL, prop_eff):
+    #CDo = Minimum drag coefficent
     #e = Wing efficiency ratio, .7 for rectangular wings, 1 for elliptical
     #AR = Aspect Ratio from AT502
     #rho = Air density of choice
-    #
+    #R = turn radius
+    #CL = CL during cruise
+    #prop_eff = propeller effiecncy
     g = 32.17 #ft/s^2
     n = np.sqrt((v**2/(R * g))**2 + 1)
     k = 1 / (np.pi * e * AR)
