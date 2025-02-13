@@ -150,12 +150,12 @@ W_S3, W_P3 = cruise_speed(v = 250, CDo = 0.03, e = 0.7, AR = 8, rho = 0.002242, 
 W_S4, W_P4 = absolute_ceiling(e = 0.7, AR = 8, CDo = 0.03, rho = 0.00176, CLmaxCL = 1.2, prop_eff = 0.7) #rho = density 10000ft
 W_S5, W_P5 = sustained_turn(CDo = 0.03, rho = 0.002242, v = 250, e = 0.7, AR = 8, R = 1000, CL = 1.2, prop_eff = 0.7) #rho = density 2000ft
 plt.plot(WTO_Sref_Cl, WCL_PCL, color = "#FF0000", marker = "s", markersize=1, label = "Climb1 Req")
-plt.plot(WTO_Sref_Cl2, WCL_PCL2, color = "#CC0000", marker = "s", markersize=1, label = "Climb2 Req")
-plt.plot(WTO_Sref_Cl3, WCL_PCL3, color = "#FF9999", marker = "s", markersize=1, label = "Climb3 Req")
+plt.plot(WTO_Sref_Cl2, WCL_PCL2, color = "k", marker = "s", markersize=1, label = "Climb2 Req")
+plt.plot(WTO_Sref_Cl3, WCL_PCL3, color = "#80FF00", marker = "s", markersize=1, label = "Climb3 Req")
 plt.plot(W_S, W_P, color="#FF8000", marker = "s", markersize=1, label = "Takeoff Distance Req")
 plt.plot(W_S1, W_P1, color="#0080FF", marker = "s", markersize=1, label = "Stall Req")
 plt.plot(W_S2, W_P2, color="#FF00FF", marker = "s", markersize=1, label = "Landingfield Length Req")
-plt.plot(W_S3, W_P3, color="#80FF00", marker = "s", markersize=1, label = "Cruise Speed Req")
+plt.plot(W_S3, W_P3, color="k", marker = "s", markersize=1, label = "Cruise Speed Req")
 plt.plot(W_S4, W_P4, color="#00FFFF", marker = "s", markersize=1, label = "Ceiling Req")
 plt.plot(W_S5, W_P5, color="#7F00FF", marker = "s", markersize=1, label = "Sustained Turn Req")
 plt.xlim(10,100)
