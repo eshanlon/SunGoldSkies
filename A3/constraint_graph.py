@@ -2,34 +2,68 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-<<<<<<< HEAD
-#CDo = 0.03
 
-def density(h):
-    # Density Correction Equation. Pulled from Lecture 7 Slide 15.
-    # Equation originally in [SI]. Converted to English Units.
-    # h = height[ft]
-=======
+#SET DEFAULT FIGURE APPERANCE
+import seaborn as sns # type: ignore #Fancy plotting package
+#No Background fill, legend font scale, frame on legend
+sns.set(style='whitegrid', font_scale=1.5, rc={'legend.frameon': True})
+#Mark ticks with border on all four sides (overrides 'whitegrid')
+sns.set_style('ticks')
+#ticks point in
+sns.set_style({"xtick.direction": "in","ytick.direction": "in"})
+#fix invisible marker bug
+sns.set_context(rc={'lines.markeredgewidth': 0.1})
+#restore default matplotlib colormap
+mplcolors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+'#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+sns.set_palette(mplcolors)
+#Get color cycle for manual colors
+colors = sns.color_palette()
+#SET MATPLOTLIB DEFAULTS
+#(call after seaborn, which changes some defaults)
+params = {
+#FONT SIZES
+'axes.labelsize' : 30, #Axis Labels
+'axes.titlesize' : 30, #Title
+'font.size' : 28, #Textbox
+'xtick.labelsize': 22, #Axis tick labels
+'ytick.labelsize': 22, #Axis tick labels
+'legend.fontsize': 24, #Legend font size
+'font.family' : 'serif',
+'font.fantasy' : 'xkcd',
+'font.sans-serif': 'Helvetica',
+'font.monospace' : 'Courier',
+#AXIS PROPERTIES
+'axes.titlepad' : 2*6.0, #title spacing from axis
+'axes.grid' : True, #grid on plot
+'figure.figsize' : (8,8), #square plots
+'savefig.bbox' : 'tight', #reduce whitespace in saved figures
+#LEGEND PROPERTIES
+'legend.framealpha' : 0.5,
+'legend.fancybox' : True,
+'legend.frameon' : True,
+'legend.numpoints' : 1,
+'legend.scatterpoints' : 1,
+'legend.borderpad' : 0.1,
+'legend.borderaxespad' : 0.1,
+'legend.handletextpad' : 0.2,
+'legend.handlelength' : 1.0,
+'legend.labelspacing' : 0,
+}
+import matplotlib # type: ignore
+matplotlib.rcParams.update(params) #update matplotlib defaults, call after￿
+### END OF BOILERPLATE ##################################################
+colors = sns.color_palette() #color cycle
+
+### START of Constraints Graph ##########################################
+
 CDo = 0.03
 def density_ratio(h):
     #h = height[m]
->>>>>>> 312f831fd1a191225e727e3cd8474562713826f8
     #
     #
     #
     #
-<<<<<<< HEAD
-    lamb = 0.00357 #[F/ft]
-    To = 59 #[F]
-    g = 32.19 #[ft/s^2]
-    R = 14.50 #[ft*lbf/(slug*F)]
-
-
-    rho_rhoo = (1 + ((lamb * h)/ To))**(-((g/ (R * lamb)) + 1))
-    return rho_rhoo
-
-"""
-=======
     lamb = 0.0065 #[K/m]
     To = 288.15 #[K]
     g = 9.81 #[m/s^2]
@@ -38,101 +72,45 @@ def density_ratio(h):
     rho_rhoo = (1 + ((lamb * h)/ To))**(-((g/ (R * lamb)) + 1))
     return rho_rhoo
 rho_rhoo = density_ratio(1)
->>>>>>> 312f831fd1a191225e727e3cd8474562713826f8
+
 def stall_speed(rho, vstall, CLmax):
     #rho = The density of desired alt
     #v_stall = Maximum stall speed set by the far requirment. Can also set stall lower speed
     #rho = The density of desired alt
     #v_stall = Maximum stall speed set by the far requirment. Can also set stall lower speed
     #CL_max = 1.3-1.9
-<<<<<<< HEAD
-    W_Sref = 1/2 * rho * (vstall**2) * CLmax
-    return W_Sref
-"""
-
-def takeoff_distance(rho_rhoo, CLmaxTO, W_Sref_cap, prop_eff):
-    #rho_rhoo = Density ratio for alt"""
-
-=======
     W_S = np.zeros(100)
     for i in range(len(W_S)):
         W_S[i] = 1/2 * rho * (vstall**2) * CLmax
-    W_P = np.linspace(1, 60, 100)
+    W_P = np.linspace(1, 100, 100)
     return W_S, W_P
 
-<<<<<<< HEAD
-def takeoff_distance(rho_rhoo, vstall, CLmaxTO, rho, prop_eff):
-    #rho_rhoo = Density ratio for alt
->>>>>>> 312f831fd1a191225e727e3cd8474562713826f8
-=======
 def takeoff_distance(rho_rhoo, CLmaxTO, W_Sref_cap, prop_eff):
     #rho_rhoo = Density ratio for alt"""
 
->>>>>>> 75528184be27284575f5b1d4ed4e44c90b19da8b
     #CLmaxTO = CL of choice
     #BFL = ? (TO SOLVE)
     #W_sref = Wing loading obtained 
     #rho = Air density of choice
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 75528184be27284575f5b1d4ed4e44c90b19da8b
     Ks = 1.1 #Estimation
     rho_sl = 0.002377 #[slugs/ft^3]
     vstall = 118.15 #[ft/s], 70 [kts], estimation
     prop_eff = prop_eff #Propeller effiency, estimation. 0.7 works.
     P_W = 0.09 #[hp/lb] Lecture 5, Slide 31
     vTO = Ks * vstall
-    Wto_Sref = .5 * (rho_rhoo * rho_sl) * (vTO**2) * CLmaxTO #At runway height
+    # Wto_Sref = .5 * (rho_rhoo * rho_sl) * (vTO**2) * CLmaxTO #At runway height
     #v = math.sqrt((2/(rho_sl*CLmaxTO))* Wto_Sref)
-    Tto_Wto = (prop_eff/vTO) * P_W
-    TOP_25 = Wto_Sref / (rho_rhoo * CLmaxTO * Tto_Wto)
-    BFL = 37.5 * TOP_25
+    # Tto_Wto = (prop_eff/vTO) * P_W
+
+    ###FOR TOP_23
+    # Using the equation 0.0149TOP_23^2 + 8.134TOP_23 - S_TO  ; L6S34
+    ## w/ S_TO = 1.66 * S_TO_G = 1.66 * 1000ft
+    TOP_23 = 158.22
+    #BFL = 37.5 * TOP_23
     
     WTO_Sref = np.linspace(10, W_Sref_cap, 100)
-    WTO_PTO = ((BFL * rho_rhoo * CLmaxTO * (prop_eff/np.sqrt((2/(rho_rhoo*rho_sl*CLmaxTO))*WTO_Sref)))/(37.5 * WTO_Sref))
-    
+    WTO_PTO = (TOP_23 * rho_rhoo * CLmaxTO) / WTO_Sref
     return WTO_Sref, WTO_PTO
-<<<<<<< HEAD
-
-
-"""
-def landingfield_length(rho_rhoo, CLmaxL, Sa, BFL):
-    #rho = Density of desired alt
-    #CL_maxL = CL during landing
-    #Sa = Braking distance
-    #0.65 = Macimum landing to takeoff weight ratio(needs to be changed)
-    Sland = BFL * 0.6
-    W_S = rho_rhoo * CLmaxL * (Sland - Sa) / (80 * 0.65)
-
-    return W_S
-"""
-    
-def climb(G, rho_rhoo, LD, W_Sref_cap, prop_eff, W_TO, vstall):
-=======
-    #prop_eff = Propeller effiency
-    n = 100
-    #ks = 1.1 # estimation
-    #vTO = vstall * ks
-    P_W = .09 # From historical data
-    #TTO_WTO = (prop_eff / vTO) * P_W
-    #WTO_Sref = .5 * rho * (vTO**2) * CLmaxTO
-    #print(WTO_Sref)
-    TOP = 103.268 #WTO_Sref / (rho_rhoo * CLmaxTO * P_W)
-    P_W = np.zeros(n)
-    #v = np.zeros(n)
-    W_P = np.zeros(n)
-    W_S = np.linspace(1, 100, n)
-    for i in range(len(W_S)):
-        P_W[i] = W_S[i] * (1 / (rho_rhoo * CLmaxTO * (TOP)))
-    #print(P_W)
-    W_P = 1 / P_W
-    #for i in range(len(W_S)):
-        #v[i] = math.sqrt((2 * W_S[i]) / (rho * CLmaxTO))
-        #W_P[i] = (prop_eff / v[i]) * (1 / T_W[i])
-    return W_S, W_P
-=======
->>>>>>> 75528184be27284575f5b1d4ed4e44c90b19da8b
 
 def landingfield_length(rho_rhoo, CLmaxL, Sa, prop_eff, vstall, rho):
     #rho = Density of desired alt
@@ -154,12 +132,7 @@ def landingfield_length(rho_rhoo, CLmaxL, Sa, prop_eff, vstall, rho):
     W_P = np.linspace(1, 60, 100)
     return W_S, W_P
 
-<<<<<<< HEAD
-def climb(ks, CLmaxCL, CDo, e, AR, W_Sref, rho, prop_eff):
->>>>>>> 312f831fd1a191225e727e3cd8474562713826f8
-=======
 def climb(G, rho_rhoo, LD, W_Sref_cap, prop_eff, W_TO, vstall):
->>>>>>> 75528184be27284575f5b1d4ed4e44c90b19da8b
     #ks = Speed to stall speed ratio
     #CLmaxCL - CL during climb
     #CDo = Minimum drag coefficent
@@ -177,17 +150,6 @@ def climb(G, rho_rhoo, LD, W_Sref_cap, prop_eff, W_TO, vstall):
     rho_inf = 0.07635 #[lbm/ft^3]
     #vstall = 118.15
     k = 1 / (np.pi * e * AR)
-<<<<<<< HEAD
-<<<<<<< HEAD
-    #T_W = []
-    CLmaxCL = (2 * W_TO) / (vstall**2 * rho_inf)
-    WTO_Sref_Cl = np.linspace(10, W_Sref_cap, 100)
-    print("test")
-    print(WTO_Sref_Cl)
-
-    #T_W = (((ks^2) * CDo) / CLmaxCL) + ((k) * (CLmaxCL / (ks**2))) + G
-    WCL_PCL = (18.97 * prop_eff * rho_rhoo * CLmaxCL) / ((G + (LD**-1)) * np.sqrt(WTO_Sref_Cl))
-=======
     #T_W = []
     CLmaxCL = (2 * W_TO) / (vstall**2 * rho_inf)
     WTO_Sref_Cl = np.linspace(10, W_Sref_cap, 100)
@@ -195,7 +157,6 @@ def climb(G, rho_rhoo, LD, W_Sref_cap, prop_eff, W_TO, vstall):
     #print(WTO_Sref_Cl)
         #T_W = (((ks^2) * CDo) / CLmaxCL) + ((k) * (CLmaxCL / (ks**2))) + G
     WCL_PCL = (18.97 * prop_eff * rho_rhoo * np.sqrt(CLmaxCL)) / ((G + (LD**-1)) * np.sqrt(WTO_Sref_Cl))
->>>>>>> 75528184be27284575f5b1d4ed4e44c90b19da8b
 
     #HERE I REALIZED MAYBE I CAN JUST SOLVE FOR THE CLIMB CONSTRAINT VALUES USING
     #Lecture 7 Slide 45
@@ -203,23 +164,8 @@ def climb(G, rho_rhoo, LD, W_Sref_cap, prop_eff, W_TO, vstall):
     
 
     return WTO_Sref_Cl, WCL_PCL
-<<<<<<< HEAD
-
-
-
-"""
-def cruise_speed(v, CDo, e, AR, W_Sref, CLcruise, rho, prop_eff):
-=======
-    T_W = []
-    T_W = (1 / 0.94) * ((ks**2) * CDo / CLmaxCL) + (CLmaxCL * k / (ks**2)) + G
-    v = math.sqrt((2 * W_Sref) / (rho * CLmaxCL))
-    W_P = prop_eff / (T_W * v)
-    return W_P
-=======
->>>>>>> 75528184be27284575f5b1d4ed4e44c90b19da8b
 
 def cruise_speed(v, CDo, e, AR, CLcruise, rho, prop_eff):
->>>>>>> 312f831fd1a191225e727e3cd8474562713826f8
     #v = Velocity during cruise
     #CDo = Minimum drag coefficent
     #e = Wing efficiency ratio
@@ -281,44 +227,30 @@ def sustained_turn(CDo, rho, v, e, AR, n, CL, prop_eff):
         W_P[i] = prop_eff *550 / (T_W[i] * v[i])
     return W_S, W_P
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-"""
-
-#Calling Climb() function
-WTO_Sref_Cl, WCL_PCL = climb(0.083, density(100), 8, 50, 0.7, 13757, 118.15)
-
-#Calling and Graphing takeoff_distance() function results. 
-WTO_Sref, TTO_WTO = takeoff_distance(density(52), 1.4, 50, 0.7)
-plt.plot(WTO_Sref, TTO_WTO, color="g", marker = "s", markersize=1, label = "Takeoff Distance Req")
-plt.plot(WTO_Sref_Cl, WCL_PCL, color = "red", marker = "s", markersize=1, label = "Climb")
-plt.title('Takeoff Distance')
-=======
-W_P, W_S = takeoff_distance(rho_rhoo, vstall = 101.269, CLmaxTO = 1.2, rho = 0.002377, prop_eff = 0.7)
-W_S1, W_P1 = stall_speed(rho = 0.002377, vstall = 101.269, CLmax = 1.3)
-=======
-WTO_Sref_Cl, WCL_PCL = climb(0.083, density_ratio(30), 8, 100, 0.7, 13757, 118.15)
-#W_P, W_S = takeoff_distance(rho_rhoo, vstall = 101.269, CLmaxTO = 1.2, rho = 0.002377, prop_eff = 0.7)
 W_S1, W_P1 = stall_speed(rho = 0.002377, vstall = 120.269, CLmax = 2.5)
->>>>>>> 75528184be27284575f5b1d4ed4e44c90b19da8b
-W_S2, W_P2 = landingfield_length(rho_rhoo, CLmaxL = 1.3, Sa = 600, prop_eff = 0.7, vstall = 101.269, rho = 0.002377)
-W_S3, W_P3 = cruise_speed(v = 250, CDo = 0.03, e = 0.8, AR = 8, CLcruise = 1.2, rho = 0.002377, prop_eff = 0.7)
-W_S4, W_P4 = absolute_ceiling(e = 0.8, AR = 8, CDo = 0.03, rho = 0.002377, CLmaxCL = 1.2, prop_eff = 0.7)
-W_S5, W_P5 = sustained_turn(CDo = 0.03, rho = 0.002377, v = 250, e = 0.8, AR = 8, n = .5, CL = 1.2, prop_eff = 0.7)
-WTO_Sref, TTO_WTO = takeoff_distance(density_ratio(15), 1.4, 100, 0.7)
-plt.plot(WTO_Sref, TTO_WTO, color="g", marker = "s", markersize=1, label = "Takeoff Distance Req")
+W_S2, W_P2 = takeoff_distance(density_ratio(15), 1.4, 100, 0.7)
+W_S3, W_P3 = landingfield_length(rho_rhoo, CLmaxL = 1.3, Sa = 600, prop_eff = 0.7, vstall = 101.269, rho = 0.002377)
+W_S4, W_P4 = climb(0.083, density_ratio(30), 8, 100, 0.7, 13757, 118.15)
+W_S5, W_P5 = cruise_speed(v = 250, CDo = 0.03, e = 0.8, AR = 8, CLcruise = 1.2, rho = 0.002377, prop_eff = 0.7)
+W_S6, W_P6 = absolute_ceiling(e = 0.8, AR = 8, CDo = 0.03, rho = 0.002377, CLmaxCL = 1.2, prop_eff = 0.7)
+W_S7, W_P7 = sustained_turn(CDo = 0.03, rho = 0.002377, v = 250, e = 0.8, AR = 8, n = .5, CL = 1.2, prop_eff = 0.7)
+
+
+#W_P, W_S = takeoff_distance(rho_rhoo, vstall = 101.269, CLmaxTO = 1.2, rho = 0.002377, prop_eff = 0.7)
 #print(WCL_PCL)
-plt.plot(WTO_Sref_Cl, WCL_PCL, color = "red", marker = "s", markersize=1, label = "Climb")
 #plt.plot(W_S, W_P, color="g", marker = "s", markersize=1, markerfacecolor="green")
-plt.plot(W_S1, W_P1, color="r", marker = "s", markersize=1, markerfacecolor="red")
-plt.plot(W_S2, W_P2, color="b", marker = "s", markersize=1, markerfacecolor="red")
-plt.plot(W_S3, W_P3, color="g", marker = "s", markersize=1, markerfacecolor="red")
-plt.plot(W_S4, W_P4, color="r", marker = "s", markersize=1, markerfacecolor="red")
-plt.plot(W_S5, W_P5, color="b", marker = "s", markersize=1, markerfacecolor="red")
+
+plt.plot(W_S1, W_P1, color="b", marker = "s", markersize=1, markerfacecolor="red", label = "Stall Speed")
+plt.plot(W_S2, W_P2, color="g", marker = "s", markersize=1, markerfacecolor="red", label = "Takeoff Distance Req")
+plt.plot(W_S3, W_P3, color="r", marker = "s", markersize=1, markerfacecolor="red", label = "Landing Length")
+plt.plot(W_S4, W_P4, color="c", marker = "s", markersize=1, markerfacecolor="red", label = "Climb")
+plt.plot(W_S5, W_P5, color="m", marker = "s", markersize=1, markerfacecolor="red", label = "Cruise Speed")
+plt.plot(W_S6, W_P6, color="y", marker = "s", markersize=1, markerfacecolor="red", label = "Absolute Ceiling")
+plt.plot(W_S7, W_P7, color="k", marker = "s", markersize=1, markerfacecolor="red", label = "Sustained Turn")
+
 plt.xlim(10,90)
 plt.ylim(0, 100)
 plt.title('Preliminary Sizing')
->>>>>>> 312f831fd1a191225e727e3cd8474562713826f8
 plt.legend(loc='best')
 plt.xlabel('W/S')
 plt.ylabel('W/P')
