@@ -53,7 +53,6 @@ params = {
 }
 import matplotlib # type: ignore
 matplotlib.rcParams.update(params) #update matplotlib defaults, call after￿
-### END OF BOILERPLATE ##################################################
 colors = sns.color_palette() #color cycle
 
 ############ Inputs #########################
@@ -107,17 +106,30 @@ C_L_l = np.linspace(0,C_Lmax_l,100)
 C_D_landingflapsdown = (C_Do+delta_CDo_landinggeardown+delta_CDo_landingflapsdown) + ((C_L_l**2)/(math.pi*e_landingflapsdown*AR))
 
 ############# Plotting ###########################
+# Getting lower portion of drag polar
+index = C_L <= (C_Lmax-0.1)
+C_Llow = -C_L[index]
+C_Dlow = C_D[index]
+
+index = C_L_to <= (C_Lmax_to-0.2)
+C_Llow_to = -C_L_to[index]
+C_Dlow_takeoffflapsdown = C_D_takeoffflapsdown[index]
+
+index = C_L_l <= (C_Lmax_l-0.2)
+C_Llow_l = -C_L_l[index]
+C_Dlow_landingflapsdown = C_D_landingflapsdown[index]
+
 # Plotting Cp Distribution for AOA = 8
 plt.figure(figsize=(10, 6))
 plt.grid(True)
 plt.xlabel('$C_D$', fontsize=20)
 plt.ylabel('$C_L$', fontsize=20)
 plt.plot(C_D, C_L,label='Cruise, Gear Down', color='red')
-plt.plot(C_D, -C_L, color='red')
+plt.plot(C_Dlow, C_Llow, color='red')
 plt.plot(C_D_takeoffflapsdown, C_L_to,label='Takeoff Flaps, Gear Down', color='green')
-plt.plot(C_D_takeoffflapsdown, -C_L_to, color='green')
+plt.plot(C_Dlow_takeoffflapsdown, C_Llow_to, color='green')
 plt.plot(C_D_landingflapsdown, C_L_l,label='Landing Flaps, Gear Down', color='blue')
-plt.plot(C_D_landingflapsdown, -C_L_l, color='blue')
+plt.plot(C_Dlow_landingflapsdown, C_Llow_l, color='blue')
 plt.title('Drag Polar', fontsize=20)
 plt.legend(loc='best', fontsize=15)
 plt.show()
