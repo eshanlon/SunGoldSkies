@@ -12,8 +12,8 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, LD, max_interation
     delta = 2*err
     convergedweight = []
     iterationcount = []
-    v = 337.562 # ft/s
-    n_f = .9 # percent of power used for turboprop
+    v = 250 # ft/s
+    n_f = .90 # percent of power used for turboprop
     n_b = 1 - n_f # percent of power used for battery
     while delta > err and iteration < max_interations:
         We_Wo = A * Wo ** C
@@ -45,22 +45,22 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, LD, max_interation
             New_W5_Wo = W5_W4 * W4_W3 * W3_W2 * W2_W1 * W1_Wo
             delta = abs(New_W5_Wo - W5_Wo) / abs(New_W5_Wo)
             W5_Wo = New_W5_Wo
-        New_Wo = (Wcrew + Wpayload) / (1 - We_Wo - ((n_f * Wf_Wo) + (n_b * ((m_batt * g)/ Wo) * (1 + E01_EC + E12_EC + E23_EC + E34_EC + E45_EC))))
+        New_Wo = (Wcrew + Wpayload) / (1 - We_Wo - ((n_f * Wf_Wo) + (n_b * ((m_batt)/ Wo) * (1 + E01_EC + E12_EC + E23_EC + E34_EC + E45_EC))))
         delta = abs(New_Wo - Wo) / abs(New_Wo)
         Wo = New_Wo
-        convergedweight.append(New_Wo / 32.17)
+        convergedweight.append(New_Wo)
         iterationcount.append(iteration)
         iteration += 1
-        print(New_Wo/32.17)
+        print(New_Wo)
         print(m_batt)
     return iterationcount, convergedweight
 
-Wcrew = 180 * 32.17 # lbm * g = lbf
-Wpayload = 2000 * 32.17 # lbm * g = lbf
-Wo = 9000 * 32.17 # lbm * g = lbf
+Wcrew = 180 # lbm * g / 32.17 = lbf
+Wpayload = 2000 # lbm * g / 32.17 = lbf
+Wo = 9000 # lbm * g / 32.17 = lbf
 batt_se = 1204910.008 # ft-lbf/lbm
 batt_eff = 0.905
-LD = 7
+LD = 8
 numiterations, converged_weight = weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, LD)
 plt.plot(numiterations, converged_weight, color="g", marker = "s", markersize=4, markerfacecolor="green")
 plt.title('Preliminary Estimation of Takeoff Weight (W\u2080)')
