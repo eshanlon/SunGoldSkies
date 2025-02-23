@@ -42,7 +42,7 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, LD, m_fuel, max_in
         W5_W4 = .998
         New_W5_Wo = W5_W4 * W4_W3 * W3_W2 * W2_W1 * W1_Wo
         W5_Wo = New_W5_Wo
-        Wf_Wo = 1- W5_Wo
+        Wf_Wo = (1- W5_Wo) * 1.10
 
         New_Wo = (Wcrew + Wpayload) / (1 - We_Wo - ((Wf_Wo) + (((m_batt * g)/ Wo) * (1 + E01_EC + E12_EC + E23_EC + E34_EC + E45_EC))))
         delta = abs(New_Wo - Wo) / abs(New_Wo)
