@@ -56,3 +56,46 @@ import matplotlib # type: ignore
 matplotlib.rcParams.update(params) #update matplotlib defaults, call after￿
 colors = sns.color_palette() #color cycle
 
+# Code below is to import the weight estimation code from a different folder
+import os
+import sys
+folder_path = os.path.abspath("A2")  # Use forward slashes
+if folder_path not in sys.path:
+    sys.path.append(folder_path)
+
+import weight
+
+
+
+################ Constraint Graph Iteration #################################
+# Defining known variables
+T_guess = 1000 #placeholder
+error = 1e-6
+
+
+
+# Defining S range to iterate over and setting up empty T arrays
+S = np.linspace(200,400,20)
+import numpy as np
+
+T_climb = np.empty(len(S))
+T_takeoff_distance = np.empty(len(S))
+T_stall_speed = np.empty(len(S))
+T_landingfield_length = np.empty(len(S))
+T_cruise_speed = np.empty(len(S))  # Fixed double underscore
+T_absolute_ceiling = np.empty(len(S))
+T_sustained_turn = np.empty(len(S))
+
+
+#starting with only doing the line for climb conditions
+T = np.empty(len(S))
+converged = False
+for i in range(len(S)):
+    S_o = S[i]
+    T[i] = T_guess
+    #while converged == False:
+        #W = 
+
+
+print("Code ran successfully")
+    
