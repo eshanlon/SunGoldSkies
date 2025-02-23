@@ -20,7 +20,7 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, LD, m_fuel, max_in
         m_batt = (R * Wo) / (batt_eff * batt_se * LD)
         P_aircraftb = v * (Wo / LD) * n_b# [ft-lbf/s]
         Tb = (P_aircraftb) / (v) # [lbf]
-        cb = 0.25 * (Tb / m_batt) * (1 / 3600) # [1/s]
+        cb = 0.25 * (Tb / m_batt) * (1 / 3600 * 32.17) # [1/s]
         W1 = .996 * Wo
         W2 = W1 * .998
         W3 = W2 * math.exp(-((R * cb) / (v * LD)))
@@ -44,23 +44,23 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, LD, m_fuel, max_in
         W5_Wo = New_W5_Wo
         Wf_Wo = (1- W5_Wo) * 1.10
 
-        New_Wo = (Wcrew + Wpayload) / (1 - We_Wo - ((Wf_Wo) + (((m_batt * g)/ Wo) * (1 + E01_EC + E12_EC + E23_EC + E34_EC + E45_EC))))
+        New_Wo = (Wcrew + Wpayload) / (1 - We_Wo - ((Wf_Wo) + (((m_batt*g)/ Wo) * (1 + E01_EC + E12_EC + E23_EC + E34_EC + E45_EC))))
         delta = abs(New_Wo - Wo) / abs(New_Wo)
         Wo = New_Wo
         m_fuel = Wf_Wo * Wo
         convergedweight.append(New_Wo)
         iterationcount.append(iteration)
         iteration += 1
-        print(m_fuel)
+        print(m_batt*32.17)
     return iterationcount, convergedweight
 
 Wcrew = 180 # lbm * g / 32.17 lbm = lbf
 Wpayload = 2000 # lbm * g / 32.17 lbm = lbf
 Wo = 15000 # lbm * g / 32.17 lbm = lbf
-batt_se = 23264069.84 #1204910.008 #1944347.608# ft-lbf/lbm
+batt_se = 23264069.84 #1204910.008 #23264069.84# ft-lbf/slug
 batt_eff = 0.7
 LD = 8
-m_fuel =  1000 #
+m_fuel =  1000 # lbm
 numiterations, converged_weight = weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, LD, m_fuel)
 plt.plot(numiterations, converged_weight, color="g", marker = "s", markersize=4, markerfacecolor="green")
 plt.title('Preliminary Estimation of Takeoff Weight (W\u2080)')
