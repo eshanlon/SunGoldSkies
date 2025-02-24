@@ -105,7 +105,7 @@ def landingfield_length(rho_rhoo, CLmaxL, Sa):
     W_S = rho_rhoo * CLmaxL * (Sland - Sa) / (80 * 0.7)
     return W_S
 
-def climb(AR, e, CDo, W_Sref_cap, prop_eff, rho , CLmaxCL):
+def climb(AR, e, CDo, prop_eff, rho , CLmaxCL, W_S):
     #CDo = Minimum drag coefficent
     #e = Wing efficiency ratio, .7 for rectangular wings, 1 for elliptical
     #AR = Aspect Ratio from AT502
@@ -114,16 +114,10 @@ def climb(AR, e, CDo, W_Sref_cap, prop_eff, rho , CLmaxCL):
     ks =1.3
     k = 1 / (np.pi * e * AR)
     G = 0.083 #FAR23 requiremnt
-    T_W = np.zeros(175)
-    WCL_PCL = np.zeros(175)
-    v = np.zeros(175)
-    WTO_Sref_Cl = np.linspace(10, W_Sref_cap, 175)
-    for i in range(len(WTO_Sref_Cl)):
-        T_W[i] = ((ks**2 * CDo)/(CLmaxCL) + (k * (CLmaxCL/ks**2)) + G)
-    for i in range(len(WTO_Sref_Cl)):
-        v[i] = math.sqrt((2 * WTO_Sref_Cl[i]) / (rho * CLmaxCL))
-        WCL_PCL[i] = prop_eff * 550 / (T_W[i] * v[i])
-    return WTO_Sref_Cl, WCL_PCL
+    T_W = ((ks**2 * CDo)/(CLmaxCL) + (k * (CLmaxCL/ks**2)) + G)
+    v = math.sqrt((2 * W_S) / (rho * CLmaxCL))
+    W_P = prop_eff * 550 / (T_W * v)
+    return W_P
 
 def cruise_speed(v, CDo, e, AR, rho, prop_eff, W_S):
     #v = Velocity during cruise
@@ -150,7 +144,7 @@ def absolute_ceiling(e, AR, CDo, rho, CLmaxCL, prop_eff, W_S):
     W_P = prop_eff *550 / (T_W * v)
     return W_P
 
-def sustained_turn(CDo, rho, v, e, AR, R, CL, prop_eff):
+def sustained_turn(CDo, rho, v, e, AR, R, CL, prop_eff, W_S):
     #CDo = Minimum drag coefficent
     #e = Wing efficiency ratio, .7 for rectangular wings, 1 for elliptical
     #AR = Aspect Ratio from AT502
@@ -162,16 +156,10 @@ def sustained_turn(CDo, rho, v, e, AR, R, CL, prop_eff):
     n = np.sqrt((v**2/(R * g))**2 + 1)
     k = 1 / (np.pi * e * AR)
     qst = 0.5 * rho * (v**2)
-    T_W = np.zeros(175)
-    W_P = np.zeros(175)
-    v = np.zeros(175)
-    W_S = np.linspace(1, 175, 175)
-    for i in range(len(W_S)):
-        T_W[i] = ((qst * CDo) * (1 / W_S[i])) + (k * (n**2 / qst) * W_S[i])
-    for i in range(len(W_S)):
-        v[i] = math.sqrt((2 * W_S[i]) / (rho * CL))
-        W_P[i] = prop_eff *550 / (T_W[i] * v[i])
-    return W_S, W_P
+    T_W = ((qst * CDo) * (1 / W_S)) + (k * (n**2 / qst) * W_S)
+    v = math.sqrt((2 * W_S) / (rho * CL))
+    W_P = prop_eff *550 / (T_W * v)
+    return W_P
 
 
 '''

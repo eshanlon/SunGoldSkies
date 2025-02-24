@@ -23,9 +23,10 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, m_fuel, P, P_DP, S
     v = 250 # ft/s
     n_f = .9 # percent of power used for turboprop
     n_b = 1 - n_f # percent of power used for battery
-    W_eng = P**0.9306 * 10**(-0.1205)
-    W_engDP = P_DP**0.9306 * 10**(-0.1205)
+    
     while delta > err and iteration < max_interations:
+        W_eng = P**0.9306 * 10**(-0.1205)
+        W_engDP = P_DP**0.9306 * 10**(-0.1205)
         We_Wo = A * Wo ** C
         We = We_Wo * Wo
         We = We + wing_density * (S - S_DP)
@@ -52,6 +53,9 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, m_fuel, P, P_DP, S
         W_taxi = 1 - (cf * 900 * 0.05 * (Wo / P))
         W_takeoff = W_taxi * Wo
         W1_Wo = 1 - (cf * 60 * (W_takeoff / P))
+        #if W1_Wo >= 1:
+            #W1_Wo = 0.998
+        #prob_var = W_takeoff / P
         W2_W1 = .998
         W3_W2 = math.exp(-((R * cf) / (v * LD)))
         W4_W3 = .999
