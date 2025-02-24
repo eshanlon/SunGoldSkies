@@ -92,7 +92,7 @@ P_DP = 1333.33
 # convergence tolerance
 error = 1
 # varibale to iterate over
-P_stall_speed = np.linspace(50,600,20)
+P_stall_speed = np.linspace(50,800,40)
 # variable to be calculated, setting up as empty
 S_stall_speed = np.empty(len(P_stall_speed))
 # Initial guess
@@ -132,7 +132,7 @@ for i in range(len(P_stall_speed)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_takeoff_distance = np.linspace(100,600,20)
+S_takeoff_distance = np.linspace(10,600,40)
 # variable to be calculated, setting up as empty
 P_takeoff_distance = np.empty(len(S_takeoff_distance))
 # initial guess
@@ -176,7 +176,7 @@ for i in range(len(S_takeoff_distance)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-P_landingfield_length = np.linspace(100,600,20)
+P_landingfield_length = np.linspace(100,800,40)
 # variable to be calculated, setting up as empty
 S_landingfield_length = np.empty(len(P_landingfield_length))
 # initial guess
@@ -214,7 +214,7 @@ for i in range(len(P_landingfield_length)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_climb1 = np.linspace(100,600,20)
+S_climb1 = np.linspace(10,600,40)
 # variable to be calculated, setting up as empty
 P_climb1 = np.empty(len(S_climb1))
 # initial guess
@@ -257,7 +257,7 @@ for i in range(len(S_climb1)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_climb2 = np.linspace(100,600,20)
+S_climb2 = np.linspace(10,600,40)
 # variable to be calculated, setting up as empty
 P_climb2 = np.empty(len(S_climb2))
 # initial guess
@@ -301,7 +301,7 @@ for i in range(len(S_climb2)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_climb3 = np.linspace(100,600,20)
+S_climb3 = np.linspace(10,600,40)
 # variable to be calculated, setting up as empty
 P_climb3 = np.empty(len(S_climb3))
 # initial guess
@@ -344,7 +344,7 @@ for i in range(len(S_climb3)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_cruise_speed = np.linspace(100,600,20)
+S_cruise_speed = np.linspace(10,600,40)
 # variable to be calculated, setting up as empty
 P_cruise_speed = np.empty(len(S_cruise_speed))
 # initial guess
@@ -387,7 +387,7 @@ for i in range(len(S_cruise_speed)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_absolute_ceiling = np.linspace(100,600,20)
+S_absolute_ceiling = np.linspace(10,600,40)
 # variable to be calculated, setting up as empty
 P_absolute_ceiling = np.empty(len(S_absolute_ceiling))
 # initial guess
@@ -429,7 +429,7 @@ for i in range(len(S_absolute_ceiling)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_sustained_turn = np.linspace(100,600,20)
+S_sustained_turn = np.linspace(10,600,40)
 # variable to be calculated, setting up as empty
 P_sustained_turn = np.empty(len(S_sustained_turn))
 # initial guess
@@ -468,6 +468,22 @@ for i in range(len(S_sustained_turn)):
 
 
 
+################## Comparable aircraft points ###################
+MTOW_atr42 = 41005.981 
+MTOW_atr72 = 50706.32
+MTOW_at502B = 9400
+
+wing_area_atr42 = 586.6331
+wing_area_atr72 = 656.599 
+wing_area_at502B = 312
+
+power_atr42 = (MTOW_atr42*1.5) / np.sqrt(wing_area_atr42)
+power_atr72 = (MTOW_atr72*1.5) / np.sqrt(wing_area_atr72)
+power_at502B = (MTOW_at502B*1.5) / np.sqrt(wing_area_at502B)
+
+print(power_atr42)
+print(power_atr72)
+print(power_at502B)
 
 ####################################################################
 ################## Plotting ########################################
@@ -481,8 +497,11 @@ plt.plot(S_cruise_speed, P_cruise_speed, color="brown", marker = "s", markersize
 plt.plot(S_absolute_ceiling, P_absolute_ceiling, color="#00FFFF", marker = "s", markersize=1, label = "Ceiling Req")
 plt.plot(S_sustained_turn, P_sustained_turn, color="#7F00FF", marker = "s", markersize=1, label = "Sustained Turn Req")
 #plt.scatter([29.89], [8.34], label = 'Design Point', color = '#CD2305', s = 200, marker = '*')
-#plt.xlim(10,175)
-#plt.ylim(0, 50)
+plt.scatter(wing_area_atr42, power_atr42, label="ATR 42")
+plt.scatter(wing_area_atr72, power_atr72, label="ATR 72") 
+plt.scatter(wing_area_at502B, power_at502B, label="AT-502B")
+plt.xlim(0,900)
+plt.ylim(0, 1000)
 plt.title('Constraint Graph P vs S')
 plt.legend(loc='best', fontsize = 'small')
 plt.xlabel('S (ft^2)')
