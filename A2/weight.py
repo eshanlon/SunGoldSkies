@@ -51,9 +51,10 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, LD, max_interation
         convergedweight.append(New_Wo / 32.17)
         iterationcount.append(iteration)
         iteration += 1
-        print(New_Wo/32.17)
+        #print(New_Wo/32.17)
     return iterationcount, convergedweight
 
+'''
 Wcrew = 180 * 32.17 # lbm * g = lbf
 Wpayload = 2000 * 32.17 # lbm * g = lbf
 Wo = 9000 * 32.17 # lbm * g = lbf
@@ -68,3 +69,4 @@ plt.legend(loc='best')
 plt.xlabel('# of iterations')
 plt.ylabel('Preliminary Takeoff Weight [lbs]')
 plt.show()
+'''

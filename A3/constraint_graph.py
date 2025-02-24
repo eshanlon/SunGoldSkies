@@ -80,28 +80,19 @@ def stall_speed(rho, vstall, CLmax):
     #rho = The density of desired alt
     #v_stall = Maximum stall speed set by the far requirment. Can also set stall lower speed
     #CL_max = 1.3-1.9
-    W_S = np.zeros(175)
-    for i in range(len(W_S)):
-        W_S[i] = 1/2 * rho * (vstall**2) * CLmax
-    W_P = np.linspace(1, 60, 175)
-    return W_S, W_P
+    W_S = 1/2 * rho * (vstall**2) * CLmax
+    return W_S
 
-def takeoff_distance(rho_rhoo, vstall, CLmaxTO, rho, prop_eff):
+def takeoff_distance(rho_rhoo, CLmaxTO, W_S):
     #rho_rhoo = Density ratio for alt
     #CLmaxTO = CL of choice
     #W_sref = Wing loading obtained 
     #rho = Air density of choice
     #prop_eff = Propeller effiency
-    n = 175
     TOP = 158.222 #WTO_Sref / (rho_rhoo * CLmaxTO * P_W)
-    P_W = np.zeros(n)
-    #v = np.zeros(n)
-    W_P = np.zeros(n)
-    W_S = np.linspace(1, 175, n)
-    for i in range(len(W_S)):
-        P_W[i] = W_S[i] * (1 / (rho_rhoo * CLmaxTO * (TOP)))
+    P_W = W_S * (1 / (rho_rhoo * CLmaxTO * (TOP)))
     W_P = 1 / P_W
-    return W_S, W_P
+    return W_P
 
 def landingfield_length(rho_rhoo, CLmaxL, Sa):
     #rho = Density of desired alt
@@ -111,11 +102,8 @@ def landingfield_length(rho_rhoo, CLmaxL, Sa):
     TOP = 158.222 # solved for TOP by is using the equation from lecture 6 slide 34 (STO = 8.134TOP...., STO = 1000ft from at502)
     BFL = TOP * 37.5
     Sland = BFL
-    W_S = np.zeros(175)
-    for i in range(len(W_S)):
-        W_S[i] = rho_rhoo * CLmaxL * (Sland - Sa) / (80 * 0.7)
-    W_P = np.linspace(1, 60, 175)
-    return W_S, W_P
+    W_S = rho_rhoo * CLmaxL * (Sland - Sa) / (80 * 0.7)
+    return W_S
 
 def climb(AR, e, CDo, W_Sref_cap, prop_eff, rho , CLmaxCL):
     #CDo = Minimum drag coefficent
@@ -137,7 +125,7 @@ def climb(AR, e, CDo, W_Sref_cap, prop_eff, rho , CLmaxCL):
         WCL_PCL[i] = prop_eff * 550 / (T_W[i] * v[i])
     return WTO_Sref_Cl, WCL_PCL
 
-def cruise_speed(v, CDo, e, AR, rho, prop_eff):
+def cruise_speed(v, CDo, e, AR, rho, prop_eff, W_S):
     #v = Velocity during cruise
     #CDo = Minimum drag coefficent
     #e = Wing efficiency ratio, .7 for rectangular wings, 1 for elliptical
@@ -148,29 +136,19 @@ def cruise_speed(v, CDo, e, AR, rho, prop_eff):
     k = 1 / (np.pi * e * AR)
     Wc_Wto = 0.8 #weight aproximation code 
     Pto_Pc = 1.253 #0.94/.75, max engine power / typical power used during cruise
-    W_P = np.zeros(175)
-    P_W = np.zeros(175)
-    W_S = np.linspace(1, 175, 175)
-    for i in range(len(W_S)):
-        P_W[i] = (((qcr * v)* (CDo + (((W_S[i]**2) * (Wc_Wto**2) * k)/(qcr**2)))) / (550 * prop_eff * W_S[i])) * (Pto_Pc)
+    P_W = (((qcr * v)* (CDo + (((W_S**2) * (Wc_Wto**2) * k)/(qcr**2)))) / (550 * prop_eff * W_S)) * (Pto_Pc)
     W_P = 1 / P_W
-    return W_S, W_P
+    return W_P
 
-def absolute_ceiling(e, AR, CDo, rho, CLmaxCL, prop_eff):
+def absolute_ceiling(e, AR, CDo, rho, CLmaxCL, prop_eff, W_S):
     #e = Wing efficiency ratio, .7 for rectangular wings, 1 for elliptical
     #AR = Aspect Ratio from AT502
     #CDo = Minimum drag coefficent
     k = 1 / (np.pi * e * AR)
-    W_S = np.linspace(1, 175, 175)
-    T_W = np.zeros(175)
-    W_P = np.zeros(175)
-    v = np.zeros(175)
-    for i in range(len(W_S)):
-        T_W[i] = 2 * math.sqrt(k * CDo)
-    for i in range(len(W_S)):
-        v[i] = math.sqrt((2 * W_S[i]) / (rho * CLmaxCL))
-        W_P[i] = prop_eff *550 / (T_W[i] * v[i])
-    return W_S, W_P
+    T_W = 2 * math.sqrt(k * CDo)
+    v = math.sqrt((2 * W_S) / (rho * CLmaxCL))
+    W_P = prop_eff *550 / (T_W * v)
+    return W_P
 
 def sustained_turn(CDo, rho, v, e, AR, R, CL, prop_eff):
     #CDo = Minimum drag coefficent
@@ -195,6 +173,8 @@ def sustained_turn(CDo, rho, v, e, AR, R, CL, prop_eff):
         W_P[i] = prop_eff *550 / (T_W[i] * v[i])
     return W_S, W_P
 
+
+'''
 WTO_Sref_Cl, WCL_PCL = climb(AR = 8, e = 0.8, CDo = 0.0284, W_Sref_cap = 175, prop_eff = 0.7, rho = (density_ratio(500) * 0.002378) , CLmaxCL = 1.5)
 WTO_Sref_Cl2, WCL_PCL2 = climb(AR = 8, e = 0.8, CDo = 0.0284, W_Sref_cap = 175, prop_eff = 0.7, rho = (density_ratio(1500) * 0.002378) , CLmaxCL = 1.5)
 WTO_Sref_Cl3, WCL_PCL3 = climb(AR = 8, e = 0.8, CDo = 0.0284, W_Sref_cap = 175, prop_eff = 0.7, rho = (density_ratio(3000) * 0.002378) , CLmaxCL = 1.5)
@@ -221,3 +201,4 @@ plt.legend(loc='best', fontsize = 'small')
 plt.xlabel('W/S(lb/ft^2)')
 plt.ylabel('W/P(lb/hp)')
 plt.show()
+'''
