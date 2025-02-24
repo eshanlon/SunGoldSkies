@@ -76,7 +76,7 @@ batt_eff = 0.7
 m_fuel =  1000 # lbm
 S_DP = 400
 S = 600
-P = 1000
+P = 1100
 P_DP = 1333.33
 numiterations, converged_weight = weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, m_fuel, P, P_DP, S, S_DP)
 plt.plot(numiterations, converged_weight, color="g", marker = "s", markersize=4, markerfacecolor="green")
