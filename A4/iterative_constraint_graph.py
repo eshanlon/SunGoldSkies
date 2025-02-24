@@ -74,6 +74,18 @@ import constraint_graph
 
 ################ Constraint Graph Iteration #################################
 
+# Constants for weight estimation code
+Wcrew = 180 # lbm * g / 32.17 lbm = lbf
+Wpayload = 2000 # lbm * g / 32.17 lbm = lbf
+Wo = 15000 # lbm * g / 32.17 lbm = lbf
+batt_se = 23264069.84 #1204910.008 #23264069.84# ft-lbf/slug
+batt_eff = 0.7
+m_fuel =  1000 # lbm
+S_DP = 400
+#S = 600
+#P = 1100
+P_DP = 1333.33
+
 
 ############### For stall speed constraint #######################################
 # this calculates W_S, stall_speed function does not depend on S or P, so no iterations
@@ -88,9 +100,9 @@ CLmax = 1.8
 rho = 0.002377
 vstall = 118.47
 
+'''
 for i in range(len(P_stall_speed)):
-    #W = weight.weight_estimation(input variables here)
-    W = 9000
+    W = weight.weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, m_fuel, P_stall_speed[i], P_DP, S_stall_speed[i], S_DP, max_interations = 20)
     W_S = constraint_graph.stall_speed(rho, vstall, CLmax)
     S_new = (1/W_S)*W
     S_stall_speed[i] = S_new
@@ -99,6 +111,8 @@ for i in range(len(P_stall_speed)):
     #print('And now we out of the while loop')
 
 #print(S_landingfield_length)
+'''
+
 
 
 ############### For takeoff distance constraint ##################################
@@ -106,11 +120,11 @@ for i in range(len(P_stall_speed)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_takeoff_distance = np.linspace(200,400,10)
+S_takeoff_distance = np.linspace(200,600,20)
 # variable to be calculated, setting up as empty
 P_takeoff_distance = np.empty(len(S_takeoff_distance))
 # initial guess
-P_guess = 1000 #placeholder
+P_guess = 400 #placeholder
 # Inputs for takeoff_distance function
 rho_rhoo = constraint_graph.density_ratio(10)
 CLmaxTO = 1.65
@@ -122,8 +136,8 @@ for i in range(len(S_takeoff_distance)):
     P_takeoff_distance[i] = P_guess
     iteration_count = 0
     while converged == False and iteration_count < 10:
-        #W = weight.weight_estimation(input variables here)
-        W = 9000
+        W = weight.weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, m_fuel, P_takeoff_distance[i], P_DP, S_o, S_DP, max_interations = 20)
+        #W = 9000
         W_So = W/S_o
         # need to make the function below a function of W/S_o that outputs W_P
         W_P = constraint_graph.takeoff_distance(rho_rhoo, CLmaxTO, W_So)
@@ -146,11 +160,11 @@ for i in range(len(S_takeoff_distance)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-P_landingfield_length = np.linspace(200,400,10)
+P_landingfield_length = np.linspace(200,600,20)
 # variable to be calculated, setting up as empty
 S_landingfield_length = np.empty(len(P_landingfield_length))
 # initial guess
-S_guess = 1000 #placeholder
+S_guess = 400 #placeholder
 # Inputs for takeoff_distance function
 rho_rhoo = constraint_graph.density_ratio(10) #actually don't know if this is right
 CLmaxL = 1.8
@@ -162,8 +176,8 @@ for i in range(len(P_landingfield_length)):
     S_landingfield_length[i] = S_guess
     iteration_count = 0
     while converged == False and iteration_count < 10:
-        #W = weight.weight_estimation(input variables here)
-        W = 9000
+        W = weight.weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, m_fuel, P_o, P_DP, S_landingfield_length[i], S_DP, max_interations = 20)
+        #W = 9000
         W_S = constraint_graph.landingfield_length(rho_rhoo, CLmaxL, Sa)
         S_new = (1/W_S)*W
         delta = abs(S_new-S_landingfield_length[i])
@@ -187,11 +201,11 @@ for i in range(len(P_landingfield_length)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_cruise_speed = np.linspace(200,400,10)
+S_cruise_speed = np.linspace(200,600,20)
 # variable to be calculated, setting up as empty
 P_cruise_speed = np.empty(len(S_cruise_speed))
 # initial guess
-P_guess = 1000 #placeholder
+P_guess = 400 #placeholder
 # Inputs for cruise_speed function
 v = 225
 CDo = 0.006
@@ -206,8 +220,8 @@ for i in range(len(S_cruise_speed)):
     P_cruise_speed[i] = P_guess
     iteration_count = 0
     while converged == False and iteration_count < 10:
-        #W = weight.weight_estimation(input variables here)
-        W = 9000
+        W = weight.weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, m_fuel, P_cruise_speed[i], P_DP, S_o, S_DP, max_interations = 20)
+        #W = 9000
         W_So = W/S_o
         # need to make the function below a function of W/S_o that outputs W_P
         W_P = constraint_graph.cruise_speed(v, CDo, e, AR, rho, prop_eff, W_So)
@@ -230,11 +244,11 @@ for i in range(len(S_cruise_speed)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_absolute_ceiling = np.linspace(200,400,10)
+S_absolute_ceiling = np.linspace(200,600,20)
 # variable to be calculated, setting up as empty
 P_absolute_ceiling = np.empty(len(S_absolute_ceiling))
 # initial guess
-P_guess = 1000 #placeholder
+P_guess = 400 #placeholder
 # Inputs for absolute_ceiling function
 CLmaxCL = 1.5
 CDo = 0.0284
@@ -249,8 +263,8 @@ for i in range(len(S_absolute_ceiling)):
     P_absolute_ceiling[i] = P_guess
     iteration_count = 0
     while converged == False and iteration_count < 10:
-        #W = weight.weight_estimation(input variables here)
-        W = 9000
+        W = weight.weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, m_fuel, P_absolute_ceiling[i], P_DP, S_o, S_DP, max_interations = 20)
+        #W = 9000
         W_So = W/S_o
         # need to make the function below a function of W/S_o that outputs W_P
         W_P = constraint_graph.absolute_ceiling(e, AR, CDo, rho, CLmaxCL, prop_eff, W_So)
@@ -277,7 +291,7 @@ for i in range(len(S_absolute_ceiling)):
 #plt.plot(WTO_Sref_Cl2, WCL_PCL2, color = "k", marker = "s", markersize=1, label = "Climb2 Req")
 #plt.plot(WTO_Sref_Cl3, WCL_PCL3, color = "#80FF00", marker = "s", markersize=1, label = "Climb3 Req")
 plt.plot(S_takeoff_distance, P_takeoff_distance, color="#FF8000", marker = "s", markersize=1, label = "Takeoff Distance Req")
-plt.plot(S_stall_speed, P_stall_speed, color="#0080FF", marker = "s", markersize=1, label = "Stall Req")
+#plt.plot(S_stall_speed, P_stall_speed, color="#0080FF", marker = "s", markersize=1, label = "Stall Req")
 plt.plot(S_landingfield_length, P_landingfield_length, color="#FF00FF", marker = "s", markersize=1, label = "Landingfield Length Req")
 plt.plot(S_cruise_speed, P_cruise_speed, color="brown", marker = "s", markersize=1, label = "Cruise Speed Req")
 plt.plot(S_absolute_ceiling, P_absolute_ceiling, color="#00FFFF", marker = "s", markersize=1, label = "Ceiling Req")
