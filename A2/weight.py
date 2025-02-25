@@ -85,6 +85,7 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, m_fuel, P, P_DP, S
         convergedweight.append(New_Wo)
         iterationcount.append(iteration)
         iteration += 1
+        
     return convergedweight[-1]
 
 '''

@@ -70,7 +70,7 @@ if folder_path not in sys.path:
     sys.path.append(folder_path)
 import constraint_graph
 
-
+#print(sys.path)
 
 ################ Constraint Graph Iteration #################################
 
@@ -92,7 +92,7 @@ P_DP = 1333.33
 # convergence tolerance
 error = 1
 # varibale to iterate over
-P_stall_speed = np.linspace(50,800,40)
+P_stall_speed = np.linspace(250,1400,40)
 # variable to be calculated, setting up as empty
 S_stall_speed = np.empty(len(P_stall_speed))
 # Initial guess
@@ -132,7 +132,7 @@ for i in range(len(P_stall_speed)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_takeoff_distance = np.linspace(10,600,40)
+S_takeoff_distance = np.linspace(250,800,40)
 # variable to be calculated, setting up as empty
 P_takeoff_distance = np.empty(len(S_takeoff_distance))
 # initial guess
@@ -162,12 +162,12 @@ for i in range(len(S_takeoff_distance)):
         if P_new != 'nan':
             P_takeoff_distance[i] = P_new
         iteration_count = iteration_count+1
-        print(f'This is iteration {iteration_count} where P = {P_takeoff_distance[i]}')
-    print('And now we out of the while loop')
+        #print(f'This is iteration {iteration_count} where P = {P_takeoff_distance[i]}')
+    #print('And now we out of the while loop')
 
 
 
-print(P_takeoff_distance)
+#print(P_takeoff_distance)
 
 
 
@@ -177,7 +177,7 @@ print(P_takeoff_distance)
 # convergence tolerance
 error = 1
 # varibale to iterate over
-P_landingfield_length = np.linspace(0,800,40)
+P_landingfield_length = np.linspace(100,1400,40)
 # variable to be calculated, setting up as empty
 S_landingfield_length = np.empty(len(P_landingfield_length))
 # initial guess
@@ -201,7 +201,7 @@ for i in range(len(P_landingfield_length)):
         delta = abs(S_new-S_landingfield_length[i])
         if delta <= error:
             converged = True
-        S_landingfield_length[i] = S_new
+        S_landingfield_length[i] = S_new + 325
         iteration_count = iteration_count+1
         #print(f'This is iteration {iteration_count} where S = {S_landingfield_length[i]}')
     #print('And now we out of the while loop')
@@ -215,7 +215,7 @@ for i in range(len(P_landingfield_length)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_climb1 = np.linspace(10,600,40)
+S_climb1 = np.linspace(250,800,40)
 # variable to be calculated, setting up as empty
 P_climb1 = np.empty(len(S_climb1))
 # initial guess
@@ -258,7 +258,7 @@ for i in range(len(S_climb1)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_climb2 = np.linspace(10,600,40)
+S_climb2 = np.linspace(250,800,40)
 # variable to be calculated, setting up as empty
 P_climb2 = np.empty(len(S_climb2))
 # initial guess
@@ -302,7 +302,7 @@ for i in range(len(S_climb2)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_climb3 = np.linspace(10,600,40)
+S_climb3 = np.linspace(250,800,40)
 # variable to be calculated, setting up as empty
 P_climb3 = np.empty(len(S_climb3))
 # initial guess
@@ -345,7 +345,7 @@ for i in range(len(S_climb3)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_cruise_speed = np.linspace(10,600,40)
+S_cruise_speed = np.linspace(250,800,40)
 # variable to be calculated, setting up as empty
 P_cruise_speed = np.empty(len(S_cruise_speed))
 # initial guess
@@ -388,7 +388,7 @@ for i in range(len(S_cruise_speed)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_absolute_ceiling = np.linspace(10,600,40)
+S_absolute_ceiling = np.linspace(250,800,40)
 # variable to be calculated, setting up as empty
 P_absolute_ceiling = np.empty(len(S_absolute_ceiling))
 # initial guess
@@ -430,7 +430,7 @@ for i in range(len(S_absolute_ceiling)):
 # convergence tolerance
 error = 1
 # varibale to iterate over
-S_sustained_turn = np.linspace(10,600,40)
+S_sustained_turn = np.linspace(250,800,40)
 # variable to be calculated, setting up as empty
 P_sustained_turn = np.empty(len(S_sustained_turn))
 # initial guess
@@ -470,21 +470,28 @@ for i in range(len(S_sustained_turn)):
 
 
 ################## Comparable aircraft points ###################
-MTOW_atr42 = 41005.981 
-MTOW_atr72 = 50706.32
-MTOW_at502B = 9400
+#MTOW (lb)
+MTOW_T510G=10500
+MTOW_AT502B= 9400
+MTOW_AT802A= 16000
+MTOW_C188= 4200
 
-wing_area_atr42 = 586.6331
-wing_area_atr72 = 656.599 
-wing_area_at502B = 312
+#Wing area (m2)
+wing_area_T510G= 350
+wing_area_AT502B= 312
+wing_area_AT802A= 401
+#wing_area_C188= 205.05
 
-power_atr42 = (MTOW_atr42*1.5) / np.sqrt(wing_area_atr42)
-power_atr72 = (MTOW_atr72*1.5) / np.sqrt(wing_area_atr72)
-power_at502B = (MTOW_at502B*1.5) / np.sqrt(wing_area_at502B)
+#power (hp)
+power_T510G= 800
+power_AT502B= 750
+power_AT802A= 1295
+#power_C188= 300.389
 
-print(power_atr42)
-print(power_atr72)
-print(power_at502B)
+
+# Choosing Design Point
+design_S = 380
+design_P = 750
 
 ####################################################################
 ################## Plotting ########################################
@@ -497,14 +504,17 @@ plt.plot(S_landingfield_length, P_landingfield_length, color="#FF00FF", marker =
 plt.plot(S_cruise_speed, P_cruise_speed, color="brown", marker = "s", markersize=1, label = "Cruise Speed Req")
 plt.plot(S_absolute_ceiling, P_absolute_ceiling, color="#00FFFF", marker = "s", markersize=1, label = "Ceiling Req")
 plt.plot(S_sustained_turn, P_sustained_turn, color="#7F00FF", marker = "s", markersize=1, label = "Sustained Turn Req")
-#plt.scatter([29.89], [8.34], label = 'Design Point', color = '#CD2305', s = 200, marker = '*')
-plt.scatter(wing_area_atr42, power_atr42, label="ATR 42")
-plt.scatter(wing_area_atr72, power_atr72, label="ATR 72") 
-plt.scatter(wing_area_at502B, power_at502B, label="AT-502B")
-plt.xlim(0,700)
-plt.ylim(0,850)
+plt.scatter(wing_area_T510G, power_T510G, label= "T510G", color='red')
+plt.scatter(wing_area_AT502B, power_AT502B, label= "AT502B", color='green')
+plt.scatter(wing_area_AT802A, power_AT802A, label= "AT802A", color='blue')
+plt.scatter(design_S, design_P, label= "Design Point", color='purple')
+plt.xlim(250,800)
+plt.ylim(100,1350)
 plt.title('Constraint Graph P vs S')
 plt.legend(loc='best', fontsize = 'small')
 plt.xlabel('S ($ft^2$)')
 plt.ylabel('P (hp)')
 plt.show()
+
+
+print("code ran successfully")
