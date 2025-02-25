@@ -12,8 +12,23 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, m_fuel, P, P_DP, S
     AR = 8
     e = 0.8
     k = 1 / (np.pi * e * AR)
-    Cf = 0.006
-    CDo = Cf * ((2 * S) / S)
+    #Cf = 0.006
+    #CDo = Cf * ((2 * S) / S)
+    # From figure 3.21a (same c_f as Cessna 180 and P-35, comparable aircraft)
+    c_f = 0.0060
+    # From tables 3.4 and 3.5 (pg. 122)
+    a = -2.3010 # for c_f = 0.005
+    b = 1 # for all c_f values
+    c = 1.0447 # for ag plane
+    d = 0.5326 # for ag plane
+    e = 0.82 #range 0.80 - 0.85
+    # Calculating C_Do
+    S_wet = 10**(c+d*math.log10(Wo))
+    #print(f'S_wet is {S_wet}')
+    #S_wet = S*1.25
+    f = a*S_wet**b
+    f = 10**(a+b*math.log10(S_wet))
+    CDo = f/S
     CL = np.sqrt(CDo / k)
     LD = (0.94 * CL) / (CDo + (k * CL**2))
     err = 1e-6

@@ -88,7 +88,7 @@ P_DP = 1333.33
 
 
 ############### For stall speed constraint #######################################
-# this calculates W/P so solve S for a range of T values
+# this calculates W/P so solve S for a range of P values
 # convergence tolerance
 error = 1
 # varibale to iterate over
@@ -159,24 +159,25 @@ for i in range(len(S_takeoff_distance)):
             converged = True
             #if P_new > 0:
                 #P_takeoff_distance[i] = P_new
-        P_takeoff_distance[i] = P_new
+        if P_new != 'nan':
+            P_takeoff_distance[i] = P_new
         iteration_count = iteration_count+1
-        #print(f'This is iteration {iteration_count} where P = {P_takeoff_distance[i]}')
-    #print('And now we out of the while loop')
+        print(f'This is iteration {iteration_count} where P = {P_takeoff_distance[i]}')
+    print('And now we out of the while loop')
 
 
 
-#print(P_takeoff_distance)
+print(P_takeoff_distance)
 
 
 
 
 ################ For landing distance constraint #################################
-# this calculates W/P so solve S for a range of T values
+# this calculates W/P so solve S for a range of P values
 # convergence tolerance
 error = 1
 # varibale to iterate over
-P_landingfield_length = np.linspace(100,800,40)
+P_landingfield_length = np.linspace(0,800,40)
 # variable to be calculated, setting up as empty
 S_landingfield_length = np.empty(len(P_landingfield_length))
 # initial guess
@@ -191,8 +192,8 @@ for i in range(len(P_landingfield_length)):
     converged = False
     P_o = P_landingfield_length[i]
     S_landingfield_length[i] = S_guess
-    iteration_count = 0
-    while converged == False and iteration_count < 10:
+    iteration_count = 1
+    while converged == False and iteration_count <= 1:
         W = weight.weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, m_fuel, P_o, P_DP, S_landingfield_length[i], S_DP, max_interations = 20)
         #W = 9000
         W_S = constraint_graph.landingfield_length(rho_rhoo, CLmaxL, Sa)
@@ -500,10 +501,10 @@ plt.plot(S_sustained_turn, P_sustained_turn, color="#7F00FF", marker = "s", mark
 plt.scatter(wing_area_atr42, power_atr42, label="ATR 42")
 plt.scatter(wing_area_atr72, power_atr72, label="ATR 72") 
 plt.scatter(wing_area_at502B, power_at502B, label="AT-502B")
-plt.xlim(0,900)
-plt.ylim(0, 1000)
+plt.xlim(0,700)
+plt.ylim(0,850)
 plt.title('Constraint Graph P vs S')
 plt.legend(loc='best', fontsize = 'small')
-plt.xlabel('S (ft^2)')
+plt.xlabel('S ($ft^2$)')
 plt.ylabel('P (hp)')
 plt.show()
