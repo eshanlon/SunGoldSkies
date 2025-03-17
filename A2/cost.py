@@ -177,33 +177,29 @@ def cost_analysis(filepath):
 
 
     #COC
-    c_motors = 150*P_em  # $150/hp using 2018 base year
-    c_batteries = 520*E_bat  # $520/kWh using 2018 base year
+    c_motors = 150/P_em  # $150/hp using 2018 base year
+    c_batteries = 520/E_bat  # $520/kWh using 2018 base year
     C_fuel = 1.02*W_f*(P_f/rho_f)
     W_oil = 0.0125 * W_f * (t_b/100)
     C_oil = 1.02 * W_oil * (P_oil/rho_oil)
-    C_elec = 1.05*W_b*P_elec*e_elec #1.05 is charging effeciency
-    C_ML_air = 1.03*(3+((0.67*W_airframe)/1000))*R_L
+    C_ML_air = 1.03*(3+((0.067*W_airframe)/1000))*R_L
     C_MM = 1.03*(30*cef)+0.79e-5*(C_aircraft - C_em) #c_airframe = (C_aircraft - C_engines)
     C_ML_eng = 1.03*1.3*(0.4956+(0.0532*((SHP_TO/N_motor)/1000)*(1100/H_em))+0.1)*R_L
     C_eng_mtc = N_motor*(C_ML_eng+C_MM)*t_b
-    C_elec_air = C_aircraft - C_engines + c_motors + c_batteries
     C_air_man = (C_ML_air +C_MM)*t_b
-    coc = C_fuel + C_elec+C_oil+W_oil+ C_ML_air+ C_MM + C_ML_eng+C_air_man+C_eng_mtc+C_elec_air
+    coc = C_fuel + C_oil + C_air_man + C_eng_mtc
 
     #FOC
     U_annual = (1.5e3)*((3.4546*t_b)+2.994-((12.289*(t_b)**2)-(5.6626*t_b)+8.964)**0.5)
     C_insurance = ((IR_a*C_aircraft)/U_annual)*t_b
     C_depreciation = (C_aircraft *(1-K_depreciation)*t_b)/(n*U_annual)
     doc_reg = coc + U_annual+C_insurance+C_depreciation
+    C_finance = 0.07*doc_reg
     C_registration = (0.001+((10**-8)*W_mtow))*doc_reg
 
-    foc = U_annual + C_insurance + C_depreciation + C_registration
+    foc = C_insurance + C_depreciation + C_registration + C_finance
 
     doc = coc+foc
-
-    #oil is negligable because all electric
-    #we are assuming maintenance costs are negligible (metabook says to)
 
     ########## Outputting to Excel ######################
     cost_sheet["B44"] = C_rdte
@@ -228,6 +224,9 @@ def cost_analysis(filepath):
     cost_sheet["B67"] = doc
 
 
+
     excel.save(filepath)
     print(f'Cost Analysis completed in {filepath}')
 
+
+cost_analysis('A2\cost_estimate_AC.xlsx')
