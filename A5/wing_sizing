@@ -1,0 +1,28 @@
+import math
+import numpy as np
+
+#User Defined Parameters
+AR = 8
+lambda_t = 1 #taper ratio
+Lambda_s = 0 #sweep angle
+S = 380 #wing area
+CLmax = 1.5
+CLmax_to = 1.65
+CLmax_l = 1.8
+
+########### Wing Geometry Calculations ############################
+b = math.sqrt(AR*S)
+print(f'Wingspan = {b} ft')
+print(f'Halfspan = {b/2} ft')
+c_root = (2*S)/(b*(1+lambda_t))
+c_tip = lambda_t*c_root
+print(f'c_tip = {c_tip} ft, c_root = {c_root} ft')
+#MAC:
+c_bar = 2/3*((1+lambda_t+lambda_t**2)/(1+lambda_t))*c_root
+Y_bar = b/6*((1+2*lambda_t)/(1+lambda_t))
+print(f'MAC: c_bar = {c_bar} ft, Y_bar = {Y_bar} ft')
+
+########### Flap Sizing ##############################
+#see chapter 7 of roskam
+
+
