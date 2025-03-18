@@ -76,15 +76,15 @@ import constraint_graph
 
 # Constants for weight estimation code
 Wcrew = 180 # lbm * g / 32.17 lbm = lbf
-Wpayload = 2000 # lbm * g / 32.17 lbm = lbf
-Wo = 15000 # lbm * g / 32.17 lbm = lbf
+Wpayload = 4700 # lbm * g / 32.17 lbm = lbf
+Wo = 10000 # lbm * g / 32.17 lbm = lbf
 batt_se = 23264069.84 #1204910.008 #23264069.84# ft-lbf/slug
 batt_eff = 0.7
-m_fuel =  1000 # lbm
-S_DP = 400
-#S = 600
-#P = 1100
-P_DP = 1333.33
+m_fuel =  900 # lbm
+S_DP = 350
+S = 350
+P = 800
+P_DP = 800
 
 
 ############### For stall speed constraint #######################################
@@ -98,9 +98,9 @@ S_stall_speed = np.empty(len(P_stall_speed))
 # Initial guess
 S_guess = 400
 # Inputs for takeoff_distance function
-CLmax = 1.8
+CLmax = 1.9
 rho = 0.002377
-vstall = 118.47
+vstall = 130
 
 
 for i in range(len(P_stall_speed)):
@@ -139,7 +139,7 @@ P_takeoff_distance = np.empty(len(S_takeoff_distance))
 P_guess = 400 #placeholder
 # Inputs for takeoff_distance function
 rho_rhoo = constraint_graph.density_ratio(10)
-CLmaxTO = 1.65
+CLmaxTO = 2.9
 rho = 0.00237
 
 for i in range(len(S_takeoff_distance)):
@@ -149,7 +149,7 @@ for i in range(len(S_takeoff_distance)):
     iteration_count = 0
     while converged == False and iteration_count < 10:
         W = weight.weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, m_fuel, P_takeoff_distance[i], P_DP, S_o, S_DP, max_interations = 20)
-        #W = 9000
+        #print(W)
         W_So = W/S_o
         # need to make the function below a function of W/S_o that outputs W_P
         W_P = constraint_graph.takeoff_distance(rho_rhoo, CLmaxTO, W_So)
@@ -186,7 +186,7 @@ S_guess = 400 #placeholder
 rho_rhoo = constraint_graph.density_ratio(10) #actually don't know if this is right
 CLmaxL = 1.8
 Sa = 600
-Wo = 9000 # lbm * g / 32.17 lbm = lbf
+Wo = 10000 # lbm * g / 32.17 lbm = lbf
 
 for i in range(len(P_landingfield_length)):
     converged = False
@@ -201,7 +201,7 @@ for i in range(len(P_landingfield_length)):
         delta = abs(S_new-S_landingfield_length[i])
         if delta <= error:
             converged = True
-        S_landingfield_length[i] = S_new + 325
+        S_landingfield_length[i] = S_new + 250
         iteration_count = iteration_count+1
         #print(f'This is iteration {iteration_count} where S = {S_landingfield_length[i]}')
     #print('And now we out of the while loop')
@@ -226,7 +226,7 @@ e = 0.8
 CDo = 0.0284
 prop_eff = 0.7
 rho = constraint_graph.density_ratio(500) * 0.002378
-CLmaxCL = 1.5
+CLmaxCL = 2
 
 for i in range(len(S_climb1)):
     converged = False
@@ -269,7 +269,7 @@ e = 0.8
 CDo = 0.0284
 prop_eff = 0.7
 rho = constraint_graph.density_ratio(1500) * 0.002378
-CLmaxCL = 1.5
+CLmaxCL = 2
 
 for i in range(len(S_climb2)):
     converged = False
@@ -313,7 +313,7 @@ e = 0.8
 CDo = 0.0284
 prop_eff = 0.7
 rho = constraint_graph.density_ratio(3000) * 0.002378
-CLmaxCL = 1.5
+CLmaxCL = 2
 
 for i in range(len(S_climb3)):
     converged = False
@@ -351,7 +351,7 @@ P_cruise_speed = np.empty(len(S_cruise_speed))
 # initial guess
 P_guess = 300 #placeholder
 # Inputs for cruise_speed function
-v = 225
+v = 236.319  
 CDo = 0.006
 e = 0.8
 AR = 8
@@ -438,10 +438,10 @@ P_guess = 400 #placeholder
 # Inputs for sustained_turn function
 CDo = 0.0284
 rho = 0.002242
-v = 250
+v = 236.319 
 e = 0.8
 AR = 8
-R = 1000
+R = 1200
 CL = 1.5
 prop_eff = 0.7
 
@@ -490,8 +490,8 @@ power_AT802A= 1295
 
 
 # Choosing Design Point
-design_S = 380
-design_P = 750
+design_S = 350
+design_P = 800
 
 ####################################################################
 ################## Plotting ########################################
@@ -504,12 +504,12 @@ plt.plot(S_landingfield_length, P_landingfield_length, color="#FF00FF", marker =
 plt.plot(S_cruise_speed, P_cruise_speed, color="brown", marker = "s", markersize=1, label = "Cruise Speed Req")
 plt.plot(S_absolute_ceiling, P_absolute_ceiling, color="#00FFFF", marker = "s", markersize=1, label = "Ceiling Req")
 plt.plot(S_sustained_turn, P_sustained_turn, color="#7F00FF", marker = "s", markersize=1, label = "Sustained Turn Req")
-plt.scatter(wing_area_T510G, power_T510G, label= "T510G", color='red')
-plt.scatter(wing_area_AT502B, power_AT502B, label= "AT502B", color='green')
-plt.scatter(wing_area_AT802A, power_AT802A, label= "AT802A", color='blue')
+#plt.scatter(wing_area_T510G, power_T510G, label= "T510G", color='red')
+#plt.scatter(wing_area_AT502B, power_AT502B, label= "AT502B", color='green')
+#plt.scatter(wing_area_AT802A, power_AT802A, label= "AT802A", color='blue')
 plt.scatter(design_S, design_P, label= "Design Point", color='purple')
-plt.xlim(250,800)
-plt.ylim(100,1350)
+plt.xlim(240,800)
+plt.ylim(200,1200)
 plt.title('Constraint Graph P vs S')
 plt.legend(loc='best', fontsize = 'small')
 plt.xlabel('S ($ft^2$)')
