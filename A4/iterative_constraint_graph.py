@@ -507,7 +507,7 @@ plt.plot(S_sustained_turn, P_sustained_turn, color="#7F00FF", marker = "s", mark
 #plt.scatter(wing_area_T510G, power_T510G, label= "T510G", color='red')
 #plt.scatter(wing_area_AT502B, power_AT502B, label= "AT502B", color='green')
 #plt.scatter(wing_area_AT802A, power_AT802A, label= "AT802A", color='blue')
-plt.scatter(design_S, design_P, label= "Design Point", color='purple')
+plt.scatter(design_S, design_P, label= "Design Point", color='purple', marker = '*', s = 200)
 plt.xlim(240,800)
 plt.ylim(200,1200)
 plt.title('Constraint Graph P vs S')
