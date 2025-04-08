@@ -60,7 +60,7 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, prop_eff, m_fuel, 
         m_batt = (R * Wo) / (batt_eff * batt_se * LD)
         P_aircraftb = 750 * n_b# [HP]
         Tb = (P_aircraftb) * 550 / (v) # [lbf]
-        cb = 0.25 * (Tb / m_batt) * (1 / 3600 * 32.17) # [1/s]
+        cb = 0.25 * (Tb / (m_batt* 32.17)) * (1 / 3600) # [1/s]
         W1 = .996 * Wo
         W2 = W1 * .998
         W3 = W2 * math.exp(-((R * cb) / (v * LD)))
