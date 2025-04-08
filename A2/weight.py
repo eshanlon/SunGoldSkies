@@ -10,7 +10,7 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, prop_eff, m_fuel, 
     C = -0.03 # From table 2.1 metabook
     wing_density = 2.5 # lb/ft^2 from table 7.1 pg76
     AR = 8
-    e = 0.8
+    e = 0.82 #range 0.80 - 0.85
     k = 1 / (np.pi * e * AR)
     #Cf = 0.006
     #CDo = Cf * ((2 * S) / S)
@@ -21,7 +21,6 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, prop_eff, m_fuel, 
     b = 1 # for all c_f values
     c = 1.0447 # for ag plane
     d = 0.5326 # for ag plane
-    e = 0.82 #range 0.80 - 0.85
     # Calculating C_Do
     S_wet = 10**(c+d*math.log10(Wo))
     #print(f'S_wet is {S_wet}')
@@ -85,17 +84,21 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, prop_eff, m_fuel, 
         #if W1_Wo >= 1:
             #W1_Wo = 0.998
         #prob_var = W_takeoff / P
+        h1 = 12500
+        h2 = 12500
+        h3 = 12500
+        h4 = 12500
         deltahe1 = h1 + (v**2 / (2 * g))
-        Wclimb1_Wtakeoff = math.exp(-((deltahe1 * Tp * cf) / (prop_eff * (Wtakeoff_Wtaxi * Wtaxi) * (1 - D / Tp))))
+        Wclimb1_Wtakeoff = math.exp(-((deltahe1 * Tp * cf) / (prop_eff * (Wtakeoff_Wtaxi * Wtaxi) * v * (Tp / (Wtakeoff_Wtaxi * Wtaxi) - 1 / LD))))
         deltahe2 = h2 + (v**2 / (2 * g))
-        Wclimb2_Wclimb1 = math.exp(-((deltahe2 * Tp * cf) / (prop_eff * (Wclimb1_Wtakeoff * Wtakeoff_Wtaxi * Wtaxi) * (1 - D / Tp))))
+        Wclimb2_Wclimb1 = math.exp(-((deltahe2 * Tp * cf) / (prop_eff * (Wclimb1_Wtakeoff * Wtakeoff_Wtaxi * Wtaxi) * v * (Tp / (Wclimb1_Wtakeoff * Wtakeoff_Wtaxi * Wtaxi) - 1 / LD))))
         deltahe3 = h3 + (v**2 / (2 * g))
-        Wclimb3_Wclimb2 = math.exp(-((deltahe3 * Tp * cf) / (prop_eff * (Wclimb2_Wclimb1 * Wclimb1_Wtakeoff * Wtakeoff_Wtaxi * Wtaxi) * (1 - D / Tp))))
+        Wclimb3_Wclimb2 = math.exp(-((deltahe3 * Tp * cf) / (prop_eff * (Wclimb2_Wclimb1 * Wclimb1_Wtakeoff * Wtakeoff_Wtaxi * Wtaxi) * v * (Tp / (Wclimb2_Wclimb1 * Wclimb1_Wtakeoff * Wtakeoff_Wtaxi * Wtaxi) - 1 / LD))))
         deltahe4 = h4 + (v**2 / (2 * g))
-        Wclimb4_Wclimb3 = math.exp(-((deltahe4 * Tp * cf) / (prop_eff * (Wclimb3_Wclimb2 * Wclimb2_Wclimb1 * Wclimb1_Wtakeoff * Wtakeoff_Wtaxi * Wtaxi) * (1 - D / Tp))))
+        Wclimb4_Wclimb3 = math.exp(-((deltahe4 * Tp * cf) / (prop_eff * (Wclimb3_Wclimb2 * Wclimb2_Wclimb1 * Wclimb1_Wtakeoff * Wtakeoff_Wtaxi * Wtaxi) * v * (Tp / (Wclimb3_Wclimb2 * Wclimb2_Wclimb1 * Wclimb1_Wtakeoff * Wtakeoff_Wtaxi * Wtaxi) - 1 / LD))))
         CLcruise1 = (2 * Wclimb4_Wclimb3 * (Wtakeoff_Wtaxi * Wtaxi)) / (rho50k * v**2 * S)
         LDcruise1 = CLcruise1 / (CDo + k * CLcruise1**2)
-        deltaR = 75000
+        deltaR = 80000
         Wcruise1_Wclimb4 = math.exp(-((deltaR * cf) / (v * LDcruise1)))
         CLcruise2 = (2 * Wcruise1_Wclimb4* (Wclimb4_Wclimb3 * Wtakeoff_Wtaxi * Wtaxi)) / (rho50k * v**2 * S)
         LDcruise2 = CLcruise2 / (CDo + k * CLcruise2**2)
@@ -120,20 +123,23 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, prop_eff, m_fuel, 
         iterationcount.append(iteration)
         iteration += 1
         print(Wo)
+        print(We_Wo*Wo)
+        print(Wf_Wo*Wo)
+        print(m_batt*32.17)
         
     return iterationcount, convergedweight
 
 
 Wcrew = 180 # lbm * g / 32.17 lbm = lbf
 Wpayload = 2000 # lbm * g / 32.17 lbm = lbf
-Wo = 15000 # lbm * g / 32.17 lbm = lbf
+Wo = 16000 # lbm * g / 32.17 lbm = lbf
 batt_se = 23264069.84 #1204910.008 #23264069.84# ft-lbf/slug
 batt_eff = 0.7
 prop_eff = 0.7
 m_fuel =  1000 # lbm
 S_DP = 380 #ft^2
-S = 600
-P = 1100
+S = 380
+P = 750
 P_DP = 750 #Hp
 numiterations, converged_weight = weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, prop_eff, m_fuel, P, P_DP, S, S_DP)
 plt.plot(numiterations, converged_weight, color="g", marker = "s", markersize=4, markerfacecolor="green")
