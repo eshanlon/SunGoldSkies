@@ -122,10 +122,10 @@ def weight_estimation(Wcrew, Wpayload, Wo, batt_se, batt_eff, prop_eff, m_fuel, 
         convergedweight.append(New_Wo)
         iterationcount.append(iteration)
         iteration += 1
-        print(Wo)
-        print(We_Wo*Wo)
-        print(Wf_Wo*Wo)
-        print(m_batt*32.17)
+        print(f'Wo = {Wo}')
+        print(f'We = {We_Wo*Wo}')
+        print(f'Wf = {Wf_Wo*Wo}')
+        print(f'm_batt = {m_batt*32.17}')
         
     return iterationcount, convergedweight
 
