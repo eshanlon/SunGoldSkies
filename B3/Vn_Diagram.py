@@ -126,8 +126,9 @@ nnegstall2last = nnegstall2[-1]
 Veas3last = Veas3[-1]
 
 mu = 2 * (W_max / S) / (rho0k * 6.89 * .11 * 32.17)
-print(mu)
 kg = 0.88 * mu / (5.3 + mu)
+ngustb = 1 + (kg * .11 * 56 * 250) / (498 * W_max / S)
+print(ngustb)
 
 plt.plot(Veas2, nstall2, color="r", linestyle = "-", linewidth=2)
 plt.plot(Veas3, nnegstall2, color='r', linestyle = "-", linewidth=2)
