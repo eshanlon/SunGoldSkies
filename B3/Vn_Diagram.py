@@ -128,7 +128,10 @@ Veas3last = Veas3[-1]
 mu = 2 * (W_max / S) / (rho0k * 6.89 * .11 * 32.17)
 kg = 0.88 * mu / (5.3 + mu)
 ngustb = 1 + (kg * .11 * 56 * 250) / (498 * W_max / S)
-print(ngustb)
+nneggustb = 1 - (kg * .11 * 56 * 250) / (498 * W_max / S)
+Vgustb = Vs1 * ngustb * 1.5
+ngustc = 1 + (kg * .11 * 56 * 250) / (498 * W_max / S)
+
 
 plt.plot(Veas2, nstall2, color="r", linestyle = "-", linewidth=2)
 plt.plot(Veas3, nnegstall2, color='r', linestyle = "-", linewidth=2)
@@ -136,6 +139,9 @@ plt.plot([Veas2last, Vd],[nstall2last, nstall2last], color="r", linestyle = "-",
 plt.plot([Veas3last, Vc],[nnegstall2last, nnegstall2last], color="r", linestyle = "-", linewidth=2)
 plt.plot([Vc, Vd], [nnegstall2last, 0], color="r", linestyle = "-", linewidth=2)
 plt.plot([Vd, Vd], [nstall2last, 0], color="r", linestyle = "-", linewidth=2)
+plt.scatter(Vgustb, ngustb, color = 'b', marker = '*',s = 500)
+plt.scatter(Vgustb, nneggustb, color = 'b', marker = '*',s = 500)
+plt.scatter(Vc, 1+ngustc, color = 'b', marker = '*',s = 500)
 plt.scatter(Vs1, 1, color = 'b', marker = '*',s = 500)
 plt.scatter(Vsneg1, -1, color = 'b', marker = '*',s = 500)
 plt.scatter(Vd, nstall2last, color = 'b', marker = '*',s = 500)
